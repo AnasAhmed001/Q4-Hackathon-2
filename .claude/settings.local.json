@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git fetch --all --prune)",
+      "Bash(mkdir -p history/prompts/001-console-todo-app)"
+    ]
+  }
+}

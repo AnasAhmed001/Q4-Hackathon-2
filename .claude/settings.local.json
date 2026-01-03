@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(git fetch --all --prune)",
-      "Bash(mkdir -p history/prompts/001-console-todo-app)"
+      "Bash(mkdir -p history/prompts/001-console-todo-app)",
+      "Bash(dir specs001-console-todo-appchecklists /B)",
+      "Bash(dir \"specs\\\\001-console-todo-app\\\\checklists\"\" /B)",
+      "Bash(cmd /c \"dir specs\\\\001-console-todo-app\\\\checklists\\\\ /B\")"
     ]
   }
 }

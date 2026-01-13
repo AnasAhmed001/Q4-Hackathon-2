@@ -113,7 +113,149 @@ You are not expected to solve every problem autonomously. You MUST invoke the us
 1.  **Ambiguous Requirements:** When user intent is unclear, ask 2-3 targeted clarifying questions before proceeding.
 2.  **Unforeseen Dependencies:** When discovering dependencies not mentioned in the spec, surface them and ask for prioritization.
 3.  **Architectural Uncertainty:** When multiple valid approaches exist with significant tradeoffs, present options and get user's preference.
-4.  **Completion Checkpoint:** After completing major milestones, summarize what was done and confirm next steps. 
+4.  **Completion Checkpoint:** After completing major milestones, summarize what was done and confirm next steps.
+
+### 6. Specialized Sub-Agent Delegation Strategy
+
+The project has specialized sub-agents with deep expertise in specific domains. You MUST delegate to these agents when working on tasks in their areas of specialization for better quality outcomes.
+
+**Available Sub-Agents:**
+
+#### 6.1 FastAPI Backend Development Agent
+**Agent:** `fastapi-backend-dev` (in `.claude/agents/`)  
+**Skill:** `fastapi-backend-specialist` (in `.claude/skills/`)
+
+**Delegate when:**
+- Creating or modifying FastAPI endpoints and routes
+- Implementing CRUD operations with FastAPI
+- Setting up database integrations (SQLAlchemy, async operations)
+- Adding validation with Pydantic models
+- Implementing middleware, dependency injection, or background tasks
+- Debugging FastAPI-specific issues or performance problems
+- Setting up API documentation, error handling, or testing
+
+**Examples:**
+```
+User: "Create a POST endpoint for user registration"
+→ Use fastapi-backend-dev agent
+
+User: "The API is responding slowly under load"
+→ Use fastapi-backend-dev agent for performance analysis
+
+User: "Add validation to the todo creation endpoint"
+→ Use fastapi-backend-dev agent
+```
+
+#### 6.2 Next.js Frontend Development Agent
+**Agent:** `nextjs-frontend-dev` (in `.claude/agents/`)  
+**Skill:** `shadcn-ui-designer` (in `.claude/skills/`)
+
+**Delegate when:**
+- Creating or modifying Next.js pages, components, or layouts
+- Implementing routing, navigation, or data fetching patterns
+- Building UI with shadcn/ui components
+- Implementing forms, modals, tables, or dashboards
+- Setting up Next.js App Router features or Server Components
+- Debugging frontend issues or optimizing performance
+- Implementing responsive design or accessibility features
+
+**Examples:**
+```
+User: "Create a dashboard page with user analytics"
+→ Use nextjs-frontend-dev agent
+
+User: "Build a form with validation for todo creation"
+→ Use nextjs-frontend-dev agent (for UI) + fastapi-backend-dev (for API)
+
+User: "The dashboard is slow to load"
+→ Use nextjs-frontend-dev agent for optimization
+```
+
+#### 6.3 Database Specialist Agent
+**Agent:** `neon-postgres-specialist` (in `.claude/agents/`)  
+**Skill:** `database-specialist` (in `.claude/skills/`)
+
+**Delegate when:**
+- Designing database schemas and table relationships
+- Writing complex SQL queries or optimizing existing ones
+- Creating or modifying database migrations
+- Adding indexes for performance optimization
+- Integrating ORMs (Prisma, SQLAlchemy, Mongoose)
+- Troubleshooting database connection or query performance issues
+- Setting up connection pooling or transaction management
+
+**Examples:**
+```
+User: "Design a database schema for a blog with users, posts, and comments"
+→ Use neon-postgres-specialist agent
+
+User: "My query is taking 3 seconds to load 10k records"
+→ Use neon-postgres-specialist agent for optimization
+
+User: "Create a migration to add a new category table"
+→ Use neon-postgres-specialist agent
+```
+
+#### 6.4 Authentication Specialist Agent
+**Agent:** `better-auth-specialist` (in `.claude/agents/`)  
+**Skill:** `better-auth-specialist` (in `.claude/skills/`)
+
+**Delegate when:**
+- Implementing user authentication (signup, login, logout)
+- Setting up OAuth/social login (Google, GitHub, etc.)
+- Implementing session management or JWT tokens
+- Adding role-based access control (RBAC) or permissions
+- Protecting routes or API endpoints with authentication
+- Implementing password reset, email verification, or MFA
+- Integrating authentication with database and frontend
+
+**Examples:**
+```
+User: "Add user login and signup functionality"
+→ Use better-auth-specialist agent
+
+User: "Protect the admin dashboard so only admins can access it"
+→ Use better-auth-specialist agent
+
+User: "Add Google OAuth login"
+→ Use better-auth-specialist agent
+```
+
+**Delegation Protocol:**
+
+1. **Detect Specialization Need:** Analyze the user request and identify if it falls into a specialist's domain.
+
+2. **Single vs Multi-Agent Tasks:**
+   - **Single Domain:** Delegate entirely to one specialist
+   - **Cross-Domain:** Coordinate multiple specialists sequentially
+   
+3. **Cross-Domain Coordination Example:**
+   ```
+   User: "Build a todo app with user authentication"
+   
+   Step 1: Use database-specialist → Design schema (users, todos tables)
+   Step 2: Use better-auth-specialist → Implement authentication
+   Step 3: Use fastapi-backend-dev → Create todo CRUD endpoints
+   Step 4: Use nextjs-frontend-dev → Build frontend UI
+   ```
+
+4. **Proactive Delegation:** If you detect that work requires specialist expertise during implementation, proactively suggest using the appropriate agent:
+   ```
+   "I notice this requires database schema design. Let me use the database-specialist agent 
+   to ensure optimal table structure and indexing."
+   ```
+
+5. **Agent Communication:** When delegating, provide complete context:
+   - What has been done so far
+   - What needs to be accomplished
+   - Any constraints or requirements
+   - Related files or code references
+
+6. **Integration Responsibility:** After sub-agents complete their work, YOU are responsible for:
+   - Ensuring all pieces integrate properly
+   - Verifying cross-component compatibility
+   - Running integration tests
+   - Creating comprehensive PHRs that capture the full workflow 
 
 ## Default policies (must follow)
 - Clarify and plan first - keep business understanding separate from technical plan and carefully architect and implement.

@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python scripts/package_skill.py:*)"
+      "Bash(ls:*)",
+      "Bash(.specify/scripts/bash/create-new-feature.sh --json \"Task Management Backend API\n\nObjective:\nProvide a secure REST API for managing user-specific todo tasks.\n\nFocus:\n- CRUD operations for tasks\n- Tasks are always owned by a single user\n- API behavior is consistent and predictable\n\nSuccess criteria:\n- Users can create, read, update, delete, and complete tasks\n- Users can only access their own tasks\n- API responses reflect correct task state\n\nConstraints:\n- All endpoints require authentication\n- API routes remain stable and predictable\n- Data must persist across sessions\n\nNot building:\n- Shared tasks or collaboration\n- Task categories, tags, or reminders\n- Real-time updates or websockets\" --number 1 --short-name \"task-management-api\")"
     ]
   }
 }

@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
@@ -19,9 +19,11 @@ interface TaskFormProps {
   onSubmit: (taskData: Partial<Task>) => void;
   onCancel: () => void;
   mode: 'create' | 'edit';
+  isSubmitting?: boolean;
+  submitLabel?: string;
 }
 
-export const TaskForm = ({ task, onSubmit, onCancel, mode }: TaskFormProps) => {
+export const TaskForm = ({ task, onSubmit, onCancel, mode, isSubmitting = false, submitLabel }: TaskFormProps) => {
   const [formData, setFormData] = useState<Partial<Task>>({
     title: task?.title || '',
     description: task?.description || '',
@@ -99,6 +101,7 @@ export const TaskForm = ({ task, onSubmit, onCancel, mode }: TaskFormProps) => {
             value={formData.title}
             onChange={handleChange}
             placeholder="Task title"
+            disabled={isSubmitting}
           />
           {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
         </div>
@@ -112,6 +115,7 @@ export const TaskForm = ({ task, onSubmit, onCancel, mode }: TaskFormProps) => {
             onChange={handleChange}
             placeholder="Task description (optional)"
             rows={3}
+            disabled={isSubmitting}
           />
           {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
         </div>
@@ -122,8 +126,9 @@ export const TaskForm = ({ task, onSubmit, onCancel, mode }: TaskFormProps) => {
             <Select
               value={formData.status}
               onValueChange={(value) => handleSelectChange('status', value as TaskStatus)}
+              disabled={isSubmitting}
             >
-              <SelectTrigger>
+              <SelectTrigger disabled={isSubmitting}>
                 <SelectValue placeholder="Select status" />
               </SelectTrigger>
               <SelectContent>
@@ -144,6 +149,7 @@ export const TaskForm = ({ task, onSubmit, onCancel, mode }: TaskFormProps) => {
                     "w-full justify-start text-left font-normal",
                     !formData.dueDate && "text-muted-foreground"
                   )}
+                  disabled={isSubmitting}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {formData.dueDate ? format(new Date(formData.dueDate), "PPP") : <span>Pick a date</span>}
@@ -164,11 +170,16 @@ export const TaskForm = ({ task, onSubmit, onCancel, mode }: TaskFormProps) => {
       </div>
 
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
+        <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
           Cancel
         </Button>
-        <Button type="submit">
-          {mode === 'create' ? 'Create Task' : 'Update Task'}
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {isSubmitting
+            ? mode === 'create'
+              ? 'Creating...'
+              : 'Updating...'
+            : submitLabel || (mode === 'create' ? 'Create Task' : 'Update Task')}
         </Button>
       </div>
     </form>

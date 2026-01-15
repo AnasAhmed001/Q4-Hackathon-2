@@ -14,6 +14,7 @@ export interface Task {
   title: string;
   description?: string;
   status: TaskStatus;
+  completed: boolean;
   dueDate?: string;
   userId: string;
   createdAt: string;

@@ -1,7 +1,6 @@
-from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from sqlmodel.ext.asyncio.session import AsyncSession as SQLModelAsyncSession
-from contextlib import asynccontextmanager
+from sqlmodel.ext.asyncio.session import AsyncSession
 from typing import AsyncGenerator
 
 from src.config.settings import settings
@@ -26,12 +25,11 @@ engine: AsyncEngine = create_async_engine(
 # Create async session maker
 AsyncSessionFactory = sessionmaker(
     engine,
-    class_=SQLModelAsyncSession,
+    class_=AsyncSession,
     expire_on_commit=False
 )
 
 
-@asynccontextmanager
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     """Get async database session with proper cleanup."""
     async with AsyncSessionFactory() as session:
@@ -43,11 +41,11 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 
 # Function to initialize the database tables
 async def create_db_and_tables():
-    """Create database tables if they don't exist."""
-    from src.models.user import User  # Import here to avoid circular imports
-    from src.models.task import Task  # Import here to avoid circular imports
-    from sqlmodel import SQLModel
+    """Create database tables if they don't exist.
     
-    async with engine.begin() as conn:
-        # Create tables
-        await conn.run_sync(SQLModel.metadata.create_all)
+    Note: For Neon with Better Auth, tables are managed separately:
+    - Better Auth tables: Created via better-auth-schema.sql in Neon console
+    - Task tables: Created via Alembic migrations or SQL scripts
+    """
+    # Tables are managed externally - this is a placeholder
+    pass

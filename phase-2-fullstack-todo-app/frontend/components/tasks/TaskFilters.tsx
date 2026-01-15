@@ -1,13 +1,17 @@
 'use client';
 
-import { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { TaskStatus } from '@/types/models';
 
-export const TaskFilters = () => {
-  const [statusFilter, setStatusFilter] = useState<TaskStatus | 'all'>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+interface TaskFiltersProps {
+  statusFilter: TaskStatus | 'all';
+  searchQuery: string;
+  onStatusChange: (value: TaskStatus | 'all') => void;
+  onSearchChange: (value: string) => void;
+}
+
+export const TaskFilters = ({ statusFilter, searchQuery, onStatusChange, onSearchChange }: TaskFiltersProps) => {
 
   return (
     <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -15,11 +19,11 @@ export const TaskFilters = () => {
         <Input
           placeholder="Search tasks..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => onSearchChange(e.target.value)}
         />
       </div>
       <div className="w-full sm:w-auto">
-        <Select value={statusFilter} onValueChange={(value: TaskStatus | 'all') => setStatusFilter(value)}>
+        <Select value={statusFilter} onValueChange={(value: TaskStatus | 'all') => onStatusChange(value)}>
           <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>

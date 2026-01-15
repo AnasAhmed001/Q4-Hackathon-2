@@ -1,53 +1,96 @@
 import { createAuthClient } from "better-auth/react";
+import { jwtClient } from "better-auth/client/plugins";
 
-// Initialize the Better Auth client
+// Initialize the Better Auth client with JWT plugin
 export const auth = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:8000",
+  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000",
   fetchOptions: {
     // Configure fetch options for proper cookie handling
     credentials: 'include',
   },
+  plugins: [
+    jwtClient(), // Enable JWT plugin for token management
+  ],
 });
 
 // Export auth client methods for use in components
 export const { signIn, signOut, useSession } = auth;
 
-// Function to get session and extract token for API requests
-export const getAuthToken = async (): Promise<string | null> => {
+/**
+ * Get JWT token for API requests to FastAPI backend
+ * This token is used to authenticate requests to the FastAPI server
+ */
+export const getJWTToken = async (): Promise<string | null> => {
   try {
-    const session = await auth.getSession();
-    // Better Auth typically handles authentication via httpOnly cookies,
-    // but if you need to extract a JWT token for API requests to external services:
-    return session?.accessToken || null;
+    const baseURL =
+      process.env.NEXT_PUBLIC_BETTER_AUTH_URL ||
+      process.env.BETTER_AUTH_URL ||
+      "http://localhost:3000";
+
+    const isServer = typeof window === "undefined";
+    const tokenUrl = isServer ? `${baseURL}/api/auth/token` : "/api/auth/token";
+
+    // Call Better Auth JWT endpoint to get the access token
+    const response = await fetch(tokenUrl, {
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      console.error("Failed to get JWT token:", response.statusText);
+      return null;
+    }
+
+    const data = await response.json();
+    return data.token || null;
   } catch (error) {
-    console.error("Error getting auth token:", error);
+    console.error("Error getting JWT token:", error);
     return null;
   }
 };
 
-// Function to make authenticated API requests with proper cookie handling
+/**
+ * Make authenticated API requests with JWT token
+ * This is specifically for FastAPI backend requests
+ */
 export const authenticatedFetch = async (
   url: string,
   options: RequestInit = {}
 ): Promise<Response> => {
-  // For Better Auth, authentication is typically handled via httpOnly cookies
-  // The cookies will be automatically included in requests to the same origin
-  // due to credentials: 'include' configuration
+  // Get JWT token
+  const token = await getJWTToken();
 
+  if (!token) {
+    throw new Error("No authentication token available");
+  }
+
+  // Attach JWT token to Authorization header
   return fetch(url, {
     ...options,
-    credentials: 'include', // This ensures httpOnly cookies are sent with requests
+    headers: {
+      ...options.headers,
+      Authorization: `Bearer ${token}`,
+    },
   });
 };
 
-// Function to attach auth context to API requests
+/**
+ * Attach JWT token to request options
+ * Helper function for manual request construction
+ */
 export const attachTokenToRequest = async (
   options: RequestInit = {}
 ): Promise<RequestInit> => {
-  // For Better Auth, we primarily rely on httpOnly cookies for authentication
-  // which are automatically handled by the browser when credentials: 'include'
+  const token = await getJWTToken();
+
+  if (!token) {
+    throw new Error("No authentication token available");
+  }
+
   return {
     ...options,
-    credentials: 'include',
+    headers: {
+      ...options.headers,
+      Authorization: `Bearer ${token}`,
+    },
   };
 };

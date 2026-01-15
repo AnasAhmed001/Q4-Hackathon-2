@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { Task } from '@/types/models';
-import { apiClient } from '@/lib/api-client';
+import { taskAPI } from '@/lib/api-client';
 import { TaskForm } from '@/components/tasks/TaskForm';
 import { useRouter, useParams } from 'next/navigation';
+import { useSession } from '@/lib/auth';
+import { Loader2 } from 'lucide-react';
 
 export default function EditTaskPage() {
   const [task, setTask] = useState<Task | null>(null);
@@ -13,15 +15,17 @@ export default function EditTaskPage() {
 
   const router = useRouter();
   const params = useParams();
+  const { data: session } = useSession();
 
   useEffect(() => {
-    fetchTask();
-  }, []);
+    if (!session?.user?.id) return;
+    fetchTask(session.user.id);
+  }, [session?.user?.id]);
 
-  const fetchTask = async () => {
+  const fetchTask = async (userId: string) => {
     try {
       setLoading(true);
-      const fetchedTask = await apiClient.get<Task>(`/tasks/${params.id}`);
+      const fetchedTask = await taskAPI.getTask(userId, params.id as string);
       setTask(fetchedTask);
       setError(null);
     } catch (err) {
@@ -37,7 +41,19 @@ export default function EditTaskPage() {
     setError(null);
 
     try {
-      await apiClient.put(`/tasks/${params.id}`, taskData);
+      const userId = session?.user?.id;
+      if (!userId) {
+        setError('Missing user session');
+        setLoading(false);
+        return;
+      }
+
+      await taskAPI.updateTask(userId, params.id as string, {
+        title: taskData.title,
+        description: taskData.description,
+        status: taskData.status,
+        dueDate: taskData.dueDate || undefined,
+      });
       // Redirect to tasks list after successful update
       router.push('/tasks');
       router.refresh(); // Refresh to update the UI
@@ -56,7 +72,7 @@ export default function EditTaskPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     );
   }

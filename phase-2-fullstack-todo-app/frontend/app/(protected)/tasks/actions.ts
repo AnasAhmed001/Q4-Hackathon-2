@@ -24,6 +24,8 @@ async function getServerToken() {
   });
 
   if (!res.ok) {
+    const errText = await res.text().catch(() => '');
+    console.error('[auth] token fetch failed', res.status, errText?.slice(0, 200));
     throw new Error(`Failed to get auth token (${res.status})`);
   }
 
@@ -38,7 +40,7 @@ async function authFetch<T>(path: string, options: { method?: HttpMethod; body?:
   const token = await getServerToken();
   const { method = 'GET', body } = options;
 
-    // Temporary: sanity-check auth header presence without leaking full token
+  // Temporary: sanity-check auth header presence without leaking full token
   console.log('[authFetch] token prefix', token ? token.slice(0, 8) : 'missing');
 
   const res = await fetch(`${BACKEND_URL}${path}`, {
@@ -53,6 +55,7 @@ async function authFetch<T>(path: string, options: { method?: HttpMethod; body?:
 
   if (!res.ok) {
     const errText = await res.text().catch(() => '');
+    console.error('[backend] request failed', res.status, errText?.slice(0, 200));
     throw new Error(`Backend request failed (${res.status}): ${errText || res.statusText}`);
   }
 

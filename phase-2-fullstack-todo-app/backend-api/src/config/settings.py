@@ -27,7 +27,9 @@ class Settings(BaseSettings):
     
     # API Configuration
     api_prefix: str = os.getenv("API_PREFIX", "/api")
-    allowed_origins: List[str] = ["http://localhost:3000", "http://localhost:8000"]
+    allowed_origins: List[str] = (
+        os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8000").split(",")
+    )
 
     @model_validator(mode="after")
     def normalize_database_url(self) -> "Settings":
@@ -45,6 +47,13 @@ class Settings(BaseSettings):
             url = url.replace("sslmode=require", "ssl=require")
 
         self.database_url = url
+        return self
+
+    @model_validator(mode="after")
+    def normalize_allowed_origins(self) -> "Settings":
+        """Split and trim allowed origins when provided via env."""
+        if isinstance(self.allowed_origins, list):
+            self.allowed_origins = [origin.strip() for origin in self.allowed_origins if origin.strip()]
         return self
     
     class Config:

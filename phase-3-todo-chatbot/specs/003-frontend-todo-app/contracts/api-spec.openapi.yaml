@@ -1,0 +1,541 @@
+openapi: 3.0.3
+info:
+  title: Frontend Todo Application API
+  description: API specification for the Frontend Todo Application backend
+  version: 1.0.0
+  contact:
+    name: Todo App Team
+
+servers:
+  - url: http://localhost:8000/api
+    description: Local development server
+  - url: https://api.todo-app.example.com/api
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: Tasks
+    description: Task CRUD operations
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user with email and password, returns JWT token
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: User logout
+      description: Invalidate current session and clear authentication token
+      operationId: logout
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogoutResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /tasks:
+    get:
+      tags:
+        - Tasks
+      summary: Get user's tasks
+      description: Retrieve all tasks belonging to the authenticated user, with optional filtering
+      operationId: getTasks
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          description: Filter tasks by status
+          required: false
+          schema:
+            type: string
+            enum: [pending, completed]
+        - name: search
+          in: query
+          description: Search tasks by title or description
+          required: false
+          schema:
+            type: string
+            maxLength: 100
+      responses:
+        '200':
+          description: Tasks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTasksResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      tags:
+        - Tasks
+      summary: Create new task
+      description: Create a new task for the authenticated user
+      operationId: createTask
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateTaskResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /tasks/{id}:
+    get:
+      tags:
+        - Tasks
+      summary: Get task by ID
+      description: Retrieve a specific task by ID (user must own the task)
+      operationId: getTaskById
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Task ID (UUID)
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Task retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Task belongs to another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      tags:
+        - Tasks
+      summary: Update task
+      description: Update an existing task (user must own the task)
+      operationId: updateTask
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Task ID (UUID)
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskRequest'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateTaskResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Task belongs to another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      tags:
+        - Tasks
+      summary: Delete task
+      description: Delete an existing task (user must own the task)
+      operationId: deleteTask
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Task ID (UUID)
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Task deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteTaskResponse'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Task belongs to another user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from login endpoint
+
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - email
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique user identifier
+        email:
+          type: string
+          format: email
+          description: User's email address
+        name:
+          type: string
+          maxLength: 100
+          description: Optional display name
+        createdAt:
+          type: string
+          format: date-time
+          description: User creation timestamp
+
+    Task:
+      type: object
+      required:
+        - id
+        - title
+        - status
+        - userId
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique task identifier
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Task title
+        description:
+          type: string
+          maxLength: 1000
+          description: Optional task description
+        status:
+          type: string
+          enum: [pending, completed]
+          description: Current task status
+        dueDate:
+          type: string
+          format: date-time
+          description: Optional due date
+        userId:
+          type: string
+          format: uuid
+          description: Owner user ID
+        createdAt:
+          type: string
+          format: date-time
+          description: Task creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+        password:
+          type: string
+          minLength: 8
+          description: User's password
+
+    LoginResponse:
+      type: object
+      required:
+        - user
+        - token
+        - expiresAt
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        token:
+          type: string
+          description: JWT access token
+        expiresAt:
+          type: string
+          format: date-time
+          description: Token expiration timestamp
+
+    LogoutResponse:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          description: Logout success indicator
+        message:
+          type: string
+          description: Success message
+
+    GetTasksResponse:
+      type: object
+      required:
+        - tasks
+        - total
+      properties:
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+          description: List of user's tasks
+        total:
+          type: integer
+          minimum: 0
+          description: Total number of tasks
+
+    CreateTaskRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Task title
+        description:
+          type: string
+          maxLength: 1000
+          description: Optional task description
+        status:
+          type: string
+          enum: [pending, completed]
+          default: pending
+          description: Initial task status
+        dueDate:
+          type: string
+          format: date-time
+          description: Optional due date
+
+    CreateTaskResponse:
+      type: object
+      required:
+        - task
+        - message
+      properties:
+        task:
+          $ref: '#/components/schemas/Task'
+        message:
+          type: string
+          description: Success message
+
+    UpdateTaskRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Task title
+        description:
+          type: string
+          maxLength: 1000
+          description: Task description
+        status:
+          type: string
+          enum: [pending, completed]
+          description: Task status
+        dueDate:
+          type: string
+          format: date-time
+          description: Due date
+
+    UpdateTaskResponse:
+      type: object
+      required:
+        - task
+        - message
+      properties:
+        task:
+          $ref: '#/components/schemas/Task'
+        message:
+          type: string
+          description: Success message
+
+    DeleteTaskResponse:
+      type: object
+      required:
+        - success
+        - message
+      properties:
+        success:
+          type: boolean
+          description: Deletion success indicator
+        message:
+          type: string
+          description: Success message
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+        - statusCode
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              description: Error code
+              enum:
+                - UNAUTHORIZED
+                - FORBIDDEN
+                - NOT_FOUND
+                - VALIDATION_ERROR
+                - INTERNAL_ERROR
+            message:
+              type: string
+              description: Human-readable error message
+            details:
+              type: object
+              additionalProperties:
+                type: string
+              description: Field-specific validation errors
+        statusCode:
+          type: integer
+          description: HTTP status code
+          enum: [400, 401, 403, 404, 500]

@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.config.settings import settings
 from src.api.auth import router as auth_router
 from src.api.tasks import router as tasks_router
+from src.api.chat import router as chat_router
 
 
 def create_application() -> FastAPI:
@@ -32,6 +33,7 @@ def create_application() -> FastAPI:
     # Include API routers
     app.include_router(auth_router, prefix=settings.api_prefix, tags=["Authentication"])
     app.include_router(tasks_router, prefix=settings.api_prefix, tags=["Tasks"])
+    app.include_router(chat_router, prefix=settings.api_prefix, tags=["Chat"])
 
     # Health check endpoint
     @app.get("/health")

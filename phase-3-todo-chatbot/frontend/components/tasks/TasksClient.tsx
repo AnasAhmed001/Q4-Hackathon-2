@@ -16,6 +16,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
+
 interface TasksClientProps {
   initialTasks: Task[];
   userId: string;
@@ -57,6 +58,7 @@ const useOptimisticTyped = useOptimistic as unknown as <State, Action>(
 export function TasksClient({ initialTasks, userId }: TasksClientProps) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -65,6 +67,8 @@ export function TasksClient({ initialTasks, userId }: TasksClientProps) {
   const [editError, setEditError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [updating, setUpdating] = useState(false);
+
+
 
   const [optimisticTasks, addOptimisticTask] = useOptimisticTyped(tasks, optimisticReducer);
   const [statusFilter, setStatusFilter] = useState<Task['status'] | 'all'>('all');
@@ -82,9 +86,78 @@ export function TasksClient({ initialTasks, userId }: TasksClientProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
-  const refreshTasks = async () => {
+  // Refresh tasks when the chatbot modifies them (with optimistic updates)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as {
+        ops?: Array<{ tool: string; args: Record<string, any>; result: Record<string, any> }>;
+        userId?: string;
+      } | undefined;
+
+      if (!detail?.ops?.length) {
+        refreshTasks(false);
+        return;
+      }
+
+      // Apply optimistic updates immediately
+      setTasks((prev) => {
+        let next = [...prev];
+        for (const op of detail.ops!) {
+          if (op.tool === 'add_task' && op.result.task_id) {
+            const now = new Date().toISOString();
+            next = [
+              {
+                id: op.result.task_id,
+                title: op.args.title || op.result.title || 'New task',
+                description: op.args.description || '',
+                status: (op.args.status as Task['status']) || 'pending',
+                completed: op.args.status === 'completed',
+                dueDate: op.args.due_date,
+                userId: op.args.user_id || userId,
+                createdAt: now,
+                updatedAt: now,
+              },
+              ...next,
+            ];
+          } else if (op.tool === 'complete_task' && op.result.task_id) {
+            next = next.map((t) =>
+              t.id === op.result.task_id
+                ? { ...t, status: 'completed' as Task['status'], completed: true, updatedAt: new Date().toISOString() }
+                : t,
+            );
+          } else if (op.tool === 'update_task' && op.result.task_id) {
+            next = next.map((t) =>
+              t.id === op.result.task_id
+                ? {
+                    ...t,
+                    ...(op.args.title && { title: op.args.title }),
+                    ...(op.args.description !== undefined && { description: op.args.description }),
+                    ...(op.args.status && { status: op.args.status as Task['status'], completed: op.args.status === 'completed' }),
+                    ...(op.args.due_date && { dueDate: op.args.due_date }),
+                    updatedAt: new Date().toISOString(),
+                  }
+                : t,
+            );
+          } else if (op.tool === 'delete_task' && op.result.task_id) {
+            next = next.filter((t) => t.id !== op.result.task_id);
+          }
+        }
+        return next;
+      });
+
+      // Background sync with actual DB state after a short delay
+      setTimeout(() => refreshTasks(false), 1500);
+    };
+    window.addEventListener('tasks-updated', handler);
+    return () => window.removeEventListener('tasks-updated', handler);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
+
+
+
+  const refreshTasks = async (showLoading = true) => {
     try {
-      setLoading(true);
+      if (showLoading) setLoading(true);
       const tasks = await getTasksAction(userId);
       setTasks(tasks);
       setError(null);
@@ -96,6 +169,7 @@ export function TasksClient({ initialTasks, userId }: TasksClientProps) {
       console.error('Error fetching tasks:', err);
     } finally {
       setLoading(false);
+      setInitialLoading(false);
     }
   };
 
@@ -291,7 +365,7 @@ export function TasksClient({ initialTasks, userId }: TasksClientProps) {
         <strong className="font-bold">Error! </strong>
         <span className="block sm:inline">{error}</span>
         <button
-          onClick={refreshTasks}
+          onClick={() => refreshTasks()}
           className="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
         >
           Retry
@@ -307,14 +381,16 @@ export function TasksClient({ initialTasks, userId }: TasksClientProps) {
           <h1 className="text-3xl font-bold text-foreground">Tasks</h1>
           <p className="text-sm text-muted-foreground">Stay on top of what needs doing.</p>
         </div>
-        <Button onClick={handleCreateTask}>
-          <Plus className="h-4 w-4" aria-hidden="true" />
-          New Task
-        </Button>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <Button onClick={handleCreateTask}>
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            New Task
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-2xl border border-border bg-card/80 p-4 shadow-sm backdrop-blur-sm sm:p-6">
-        {loading && (
+        {initialLoading && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <Skeleton className="h-8 w-32 bg-muted" />
@@ -332,13 +408,13 @@ export function TasksClient({ initialTasks, userId }: TasksClientProps) {
           </div>
         )}
 
-        {!loading && optimisticTasks.length === 0 && (
+        {!initialLoading && optimisticTasks.length === 0 && (
           <div className="py-12 text-center">
             <p className="text-muted-foreground text-lg">No tasks yet. Create your first task!</p>
           </div>
         )}
 
-        {!loading && optimisticTasks.length > 0 && (
+        {!initialLoading && optimisticTasks.length > 0 && (
           <TaskList
             tasks={optimisticTasks}
             onToggleComplete={handleToggleComplete}
@@ -411,6 +487,8 @@ export function TasksClient({ initialTasks, userId }: TasksClientProps) {
           )}
         </DialogContent>
       </Dialog>
+
+
     </div>
   );
 }

@@ -80,6 +80,41 @@ export interface DeleteTaskResponse {
   message: string;
 }
 
+// Chat
+export interface ChatRequest {
+  message: string;
+  conversation_id?: string;
+}
+
+export interface ChatToolCall {
+  name: string;
+  arguments?: Record<string, any> | null;
+}
+
+export interface ChatToolResponse {
+  name: string;
+  output: any;
+}
+
+export interface ChatResponse {
+  conversation_id: string;
+  response: string;
+  tool_calls?: ChatToolCall[];
+  tool_responses?: ChatToolResponse[];
+}
+
+export interface ConversationMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  created_at: string;
+}
+
+export interface ConversationHistoryResponse {
+  messages: ConversationMessage[];
+  total_count: number;
+}
+
 // Error Response
 export interface ApiErrorResponse {
   error: {

@@ -19,6 +19,9 @@ from pydantic import BaseModel
 security = HTTPBearer()
 
 
+_JWKS_CLIENT: Optional[PyJWKClient] = None
+
+
 class JWTUser(BaseModel):
     """User information extracted from JWT token"""
     id: str
@@ -58,7 +61,21 @@ def get_jwks_url() -> str:
 
 def get_jwks_client() -> PyJWKClient:
     """Create a JWKS client for verifying Better Auth JWTs."""
-    return PyJWKClient(get_jwks_url())
+    global _JWKS_CLIENT
+    if _JWKS_CLIENT is not None:
+        return _JWKS_CLIENT
+
+    timeout_s = float(os.getenv("BETTER_AUTH_JWKS_TIMEOUT", "5"))
+    _JWKS_CLIENT = PyJWKClient(get_jwks_url(), cache_keys=True, timeout=timeout_s)
+    return _JWKS_CLIENT
+
+
+def _get_hmac_secret() -> Optional[str]:
+    """Return HMAC secret (for HS256/HS512) if configured."""
+    secret = os.getenv("BETTER_AUTH_SECRET")
+    if not secret:
+        return None
+    return secret
 
 
 def decode_jwt_token(token: str) -> JWTPayload:
@@ -75,11 +92,26 @@ def decode_jwt_token(token: str) -> JWTPayload:
         HTTPException: If token is invalid, expired, or malformed
     """
     try:
-        jwks_client = get_jwks_client()
-        signing_key = jwks_client.get_signing_key_from_jwt(token)
-
         unverified_header = jwt.get_unverified_header(token)
         alg = unverified_header.get("alg", "RS256")
+
+        # Better Auth commonly uses HS* (shared secret) JWTs; in that case we
+        # should validate locally without fetching JWKS over HTTP.
+        if isinstance(alg, str) and alg.upper().startswith("HS"):
+            secret = _get_hmac_secret()
+            if secret:
+                payload: Dict[str, Any] = jwt.decode(
+                    token,
+                    secret,
+                    algorithms=[alg],
+                    audience=None,
+                    options={"verify_aud": False},
+                )
+                return JWTPayload(**payload)
+
+        # RS*/ES* tokens: verify using the Better Auth JWKS endpoint.
+        jwks_client = get_jwks_client()
+        signing_key = jwks_client.get_signing_key_from_jwt(token)
 
         payload: Dict[str, Any] = jwt.decode(
             token,

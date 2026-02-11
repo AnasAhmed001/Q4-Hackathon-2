@@ -4,6 +4,7 @@ __pycache__/
 *.pyo
 *.pyd
 .env
+.env.*
 venv/
 .venv/
 ENV/
@@ -11,6 +12,9 @@ env/
 node_modules/
 .gitignore
 Dockerfile
+.dockerignore
 *.log
 *.sqlite*
-.dockerignore
+tests/
+scripts/
+*.md

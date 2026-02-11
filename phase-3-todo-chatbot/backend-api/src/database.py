@@ -12,12 +12,14 @@ engine: AsyncEngine = create_async_engine(
     echo=settings.debug,  # Set to True for SQL query logging in development
     pool_pre_ping=True,  # Verify connections before use
     pool_recycle=300,  # Recycle connections every 5 minutes
-    pool_size=5,  # Initial pool size
-    max_overflow=10,  # Max additional connections beyond pool_size
+    pool_size=3,  # Smaller pool for serverless environments
+    max_overflow=5,  # Max additional connections beyond pool_size
+    pool_timeout=30,  # Wait up to 30s for a connection
     connect_args={
         "server_settings": {
             "application_name": "task-management-api",
-        }
+        },
+        "command_timeout": 30,  # 30s query timeout
     }
 )
 

@@ -50,6 +50,7 @@ export const auth = betterAuth({
   // Trust host for deployment
   trustedOrigins: [
     "http://localhost:3000",
+    "https://q4-hackathon-2.vercel.app",
     ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
   ],
 });

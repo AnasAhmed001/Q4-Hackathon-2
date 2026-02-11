@@ -1,13 +1,13 @@
 <!--
-Version: 1.0.0 → 2.0.0 (MAJOR: New core principles for Phase III - MCP-first, stateless architecture; added Technology Stack, MCP Tools, Database Models, API specs)
-Modified Principles: Correctness→Stateless Architecture; Reliability→MCP-First; User Isolation→User-Scoped; Security-First→Production-Ready; Added Core Principles matching Phase III
-Added Sections: Technology Stack, MCP Tools Requirements, Database Models (Fixed), API Endpoint, Code Quality Standards, Natural Language Understanding, Stateless Architecture Rules (CRITICAL), Development Workflow, Success Criteria
-Removed Sections: Key Standards (consolidated into Code Quality), Constraints (merged into principles)
+Version: 2.0.0 → 2.1.0 (MINOR: Added Testing Discipline principle, observability/deployment standards)
+Modified Principles: Production-Ready (expanded observability)
+Added Sections: V. Testing Discipline, Deployment Standards
+Removed Sections: None
 Templates Requiring Updates:
-  ✅ .specify/templates/plan-template.md - Constitution Check aligns with new MCP/stateless principles
-  ✅ .specify/templates/spec-template.md - Requirements align with MCP tools and models
-  ✅ .specify/templates/tasks-template.md - Task organization supports MCP tool implementation and testing
-Follow-up TODOs: None - All placeholders resolved
+  ✅ .specify/templates/plan-template.md - Constitution Check now includes testing/observability gates
+  ✅ .specify/templates/spec-template.md - Success Criteria aligns with new testing metrics
+  ✅ .specify/templates/tasks-template.md - Tasks now mandate MCP tests/unit coverage
+Follow-up TODOs: None
 -->
 # Todo AI Chatbot - Phase III Constitution
 ## Stateless, Database-Backed, MCP-Powered Conversational Interface
@@ -30,9 +30,17 @@ Every operation requires user_id for authorization. User isolation strictly enfo
 **Rationale**: Prevents data leakage in multi-user environment.
 
 ### IV. Production-Ready
-Complete implementations with error handling, validation, tests. Comprehensive error handling with user-friendly messages. Database session per request (proper cleanup). Environment variables for all configuration. Logging for debugging and monitoring.
+Complete implementations with error handling, validation, tests. Comprehensive error handling with user-friendly messages. Database session per request (proper cleanup). Environment variables for all configuration. Structured logging (JSON, MCP calls/user_id masked). Metrics (tool calls/sec, latency p95<200ms).
 
-**Rationale**: Hackathon must deliver deployable, robust system.
+**Rationale**: Enables monitoring/scaling conversational AI.
+
+### V. Testing Discipline
+All MCP tools and /api/{user_id}/chat MUST have:
+- Unit tests (80%+ coverage, mock DB).
+- Integration tests (end-to-end chat flows, multi-tool composition).
+- Mocked auth/user_id scenarios.
+
+**Rationale**: Verifies stateless behavior, natural language mappings.
 
 ## Technology Stack (Non-Negotiable)
 - Frontend: OpenAI ChatKit
@@ -68,6 +76,14 @@ Complete implementations with error handling, validation, tests. Comprehensive e
 - Test natural language to tool call mappings
 - Ensure horizontal scalability
 
+## Deployment Standards
+- Dockerized FastAPI (multi-stage build).
+- Neon connection pooling (pool_size=20+).
+- Env: DATABASE_URL, MCP_HOST, OPENAI_API_KEY.
+- Health checks: /healthz (DB/MCP ping).
+
+**Rationale**: Production deployment without config guesswork.
+
 ## Success Criteria
 - AI chatbot manages tasks through natural language
 - Conversations persist across server restarts
@@ -96,4 +112,4 @@ This constitution supersedes all other development practices. All code changes M
 - **MINOR**: New principles/sections
 - **PATCH**: Clarifications
 
-**Version**: 2.0.0 | **Ratified**: 2026-01-12 | **Last Amended**: 2026-01-26
+**Version**: 2.1.0 | **Ratified**: 2026-01-12 | **Last Amended**: 2026-01-26

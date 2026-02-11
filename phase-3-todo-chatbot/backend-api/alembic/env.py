@@ -6,11 +6,26 @@ from alembic import context
 # This import is needed to register models with SQLAlchemy
 from src.models.user import User
 from src.models.task import Task
-from src.database import SQLModel
+from src.models.conversation import Conversation
+from src.models.message import Message
+from sqlmodel import SQLModel
+from src.config.settings import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+
+
+def _get_sync_database_url(url: str) -> str:
+    sync_url = url
+    if sync_url.startswith("postgresql+asyncpg://"):
+        sync_url = sync_url.replace("postgresql+asyncpg://", "postgresql://", 1)
+    if "ssl=require" in sync_url:
+        sync_url = sync_url.replace("ssl=require", "sslmode=require")
+    return sync_url
+
+
+config.set_main_option("sqlalchemy.url", _get_sync_database_url(settings.database_url))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

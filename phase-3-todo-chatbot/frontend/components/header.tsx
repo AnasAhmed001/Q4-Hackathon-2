@@ -25,6 +25,9 @@ const Header = () => {
         <nav className="flex items-center gap-2">
           {!isPending && session ? (
             <>
+              <span className="hidden text-sm text-muted-foreground sm:inline">
+                {session.user.email}
+              </span>
               <Button
                 variant="outline"
                 onClick={async () => {

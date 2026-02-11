@@ -1,5 +1,6 @@
 import { authenticatedFetch } from './auth';
 import { Task } from '@/types/models';
+import { ChatResponse, ConversationHistoryResponse } from '@/types/api';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -209,5 +210,45 @@ export const userAPI = {
    */
   async getProfile(userId: string) {
     return apiGet(`/api/${userId}/profile`);
+  },
+};
+
+/**
+ * Chat API client
+ * Provides methods to interact with the chatbot endpoints.
+ */
+export const chatAPI = {
+  /**
+   * Send a message to the chatbot
+   */
+  async sendMessage(userId: string, message: string, conversationId?: string): Promise<ChatResponse> {
+    return apiPost<ChatResponse>(`/api/${userId}/chat`, {
+      message,
+      conversation_id: conversationId,
+    });
+  },
+
+  /**
+   * Get list of user's conversations
+   */
+  async getConversations(userId: string, params?: { skip?: number; limit?: number }) {
+    const queryParams = new URLSearchParams();
+    if (params?.skip !== undefined) queryParams.append('skip', params.skip.toString());
+    if (params?.limit !== undefined) queryParams.append('limit', params.limit.toString());
+
+    const queryString = queryParams.toString();
+    return apiGet(`/api/${userId}/conversations${queryString ? '?' + queryString : ''}`);
+  },
+
+  /**
+   * Get conversation history
+   */
+  async getConversationHistory(userId: string, conversationId: string, params?: { skip?: number; limit?: number }): Promise<ConversationHistoryResponse> {
+    const queryParams = new URLSearchParams();
+    if (params?.skip !== undefined) queryParams.append('skip', params.skip.toString());
+    if (params?.limit !== undefined) queryParams.append('limit', params.limit.toString());
+
+    const queryString = queryParams.toString();
+    return apiGet<ConversationHistoryResponse>(`/api/${userId}/conversations/${conversationId}${queryString ? '?' + queryString : ''}`);
   },
 };

@@ -14,6 +14,7 @@ export const auth = createAuthClient({
   ],
 });
 
+
 // Export auth client methods for use in components
 export const { signIn, signOut, useSession } = auth;
 

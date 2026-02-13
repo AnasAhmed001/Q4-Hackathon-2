@@ -2,9 +2,10 @@ import { createAuthClient } from "better-auth/react";
 import { jwtClient } from "better-auth/client/plugins";
 
 // Initialize the Better Auth client with JWT plugin
-// No baseURL needed — client uses relative paths (/api/auth/...)
-// which work on both localhost and production automatically
+// baseURL="" forces relative paths (/api/auth/...) which resolve to
+// the current origin on both localhost and production automatically.
 export const auth = createAuthClient({
+  baseURL: "",
   fetchOptions: {
     // Configure fetch options for proper cookie handling
     credentials: 'include',

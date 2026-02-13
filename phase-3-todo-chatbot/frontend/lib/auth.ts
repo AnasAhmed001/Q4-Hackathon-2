@@ -2,9 +2,8 @@ import { createAuthClient } from "better-auth/react";
 import { jwtClient } from "better-auth/client/plugins";
 
 // Initialize the Better Auth client with JWT plugin
-// Use current window origin so it works on localhost AND production
 export const auth = createAuthClient({
-  baseURL: typeof window !== "undefined" ? window.location.origin : (process.env.NEXT_PUBLIC_BETTER_AUTH_URL || process.env.BETTER_AUTH_URL || "http://localhost:3000"),
+  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000",
   fetchOptions: {
     // Configure fetch options for proper cookie handling
     credentials: 'include',

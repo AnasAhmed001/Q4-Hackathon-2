@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     
     # API Configuration
     api_prefix: str = os.getenv("API_PREFIX", "/api")
-    allowed_origins_raw: str = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8000")
+    allowed_origins_raw: str = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000")
     cors_allowed_origins: List[str] = []
 
     @model_validator(mode="after")

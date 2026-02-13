@@ -10,6 +10,7 @@ const Header = () => {
   const { data: session, isPending, error } = useSession();
   const router = useRouter();
 
+  
   // DEBUG: Remove after fixing — check Vercel browser console
   console.log('[Header] useSession:', { isPending, session: !!session, error, userData: session?.user?.email });
 

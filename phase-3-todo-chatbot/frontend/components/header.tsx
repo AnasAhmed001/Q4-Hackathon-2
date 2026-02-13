@@ -7,8 +7,11 @@ import { Button } from '@/components/ui/button';
 import { ModeToggle } from './ModeToggle';
 
 const Header = () => {
-  const { data: session, isPending } = useSession();
+  const { data: session, isPending, error } = useSession();
   const router = useRouter();
+
+  // DEBUG: Remove after fixing — check Vercel browser console
+  console.log('[Header] useSession:', { isPending, session: !!session, error, userData: session?.user?.email });
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background backdrop-blur-md">

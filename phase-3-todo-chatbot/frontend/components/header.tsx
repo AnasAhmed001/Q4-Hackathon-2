@@ -10,12 +10,16 @@ const Header = () => {
   const { data: session, isPending, error } = useSession();
   const router = useRouter();
 
-  
+
   // DEBUG: Remove after fixing — check Vercel browser console
   console.log('[Header] useSession:', { isPending, session: !!session, error, userData: session?.user?.email });
 
   return (
     <header className="sticky top-0 z-40 border-b bg-background backdrop-blur-md">
+      {/* DEBUG: visible debug bar — REMOVE after fixing */}
+      <div className="bg-yellow-500 text-black text-xs px-2 py-1">
+        DEBUG: isPending={String(isPending)} | session={String(!!session)} | email={session?.user?.email ?? 'null'} | error={String(error ?? 'none')}
+      </div>
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-gray-900 to-gray-700 text-white font-semibold">

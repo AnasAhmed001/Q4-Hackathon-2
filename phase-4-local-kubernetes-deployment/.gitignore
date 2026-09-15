@@ -1,1 +1,4 @@
 .vscode/
+.neon
+.env.local
+node_modules/

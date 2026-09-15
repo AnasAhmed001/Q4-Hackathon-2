@@ -1,0 +1,8 @@
+mcp>=1.0.0
+sqlmodel[postgresql]>=0.0.20
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+pydantic>=2.9.0
+alembic>=1.16.0
+psycopg[binary]>=3.2.0
+python-multipart>=0.0.12

@@ -2,3 +2,10 @@
 .neon
 .env.local
 node_modules/
+
+# Phase IV — real deploy credentials. Only the .example template is committed.
+deploy/.env.deploy
+# deploy.sh writes a quote-normalized copy here while building the Secret (kubectl
+# needs a real relative file; it cannot read a Git Bash /tmp path). Removed on
+# exit, but ignored so a killed run can never leave a credential committable.
+deploy/.env.deploy.normalized*

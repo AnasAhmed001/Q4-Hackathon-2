@@ -1,0 +1,11 @@
+# Root-level alias required by T002.
+#
+# The .specify scripts (common.sh: get_repo_root) resolve the specs root from
+# `git rev-parse --show-toplevel`, which in this repo is THIS directory — not the
+# phase directory. To make them resolve, `specs/004-local-kubernetes-deployment`
+# is a Windows directory junction pointing at
+# phase-4-local-kubernetes-deployment/specs/004-local-kubernetes-deployment.
+#
+# It must never be committed: git would follow the junction and duplicate that
+# feature's files into the repo root. The real files live under the phase directory.
+/specs/

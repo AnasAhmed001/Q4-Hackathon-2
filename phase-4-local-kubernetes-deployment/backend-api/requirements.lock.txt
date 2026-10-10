@@ -1,0 +1,111 @@
+# Pinned lock for the container image — GENERATED, do not hand-edit.
+#
+# Source : pip freeze of backend-api/.venv on 2026-10-01 — the environment
+#          Phase III is proven to run. This is a REPRODUCTION of that
+#          environment, not a re-resolution of it.
+#
+# Why a lock and not requirements.txt:
+#   requirements.txt is stale and UNSATISFIABLE. It pins mcp==1.0.0 and
+#   httpx==0.25.2, but the running app needs mcp 1.26.0 (src/mcp/server.py
+#   does 'from mcp.server import FastMCP', which 1.0.0 does not export) and
+#   mcp 1.26.0 requires anyio>=4.5 while fastapi==0.104.1 declares
+#   anyio<4.0.0. No pip resolver can satisfy both. The real environment
+#   carries anyio 4.12.1 in violation of fastapi's own metadata and works.
+#
+# Why --no-deps at install time:
+#   Because that fastapi/anyio conflict is real, a resolving install of
+#   this very file still fails with ResolutionImpossible. The freeze is
+#   COMPLETE — every transitive dependency is pinned below — so skipping
+#   resolution reproduces the proven environment exactly instead of
+#   substituting a different one.
+#
+# Runtime versions here are deliberately NOT modernized: the goal is to
+# deploy what Phase III actually runs.
+#
+# pywin32 excluded (Windows-only; mcp declares it under sys_platform=='win32').
+
+aiohappyeyeballs==2.6.1
+aiohttp==3.13.3
+aiosignal==1.4.0
+alembic==1.13.1
+annotated-types==0.7.0
+anyio==4.12.1
+asyncpg==0.29.0
+attrs==25.4.0
+bcrypt==5.0.0
+certifi==2026.1.4
+cffi==2.0.0
+charset-normalizer==3.4.4
+click==8.3.1
+cohere==5.20.4
+colorama==0.4.6
+cryptography==46.0.4
+distro==1.9.0
+ecdsa==0.19.1
+fastapi==0.104.1
+fastavro==1.12.1
+fastuuid==0.14.0
+filelock==3.20.3
+frozenlist==1.8.0
+fsspec==2026.1.0
+greenlet==3.3.1
+griffe==1.15.0
+h11==0.16.0
+hf-xet==1.2.0
+httpcore==1.0.9
+httptools==0.7.1
+httpx==0.28.1
+httpx-sse==0.4.3
+huggingface_hub==1.4.0
+idna==3.11
+importlib_metadata==8.7.1
+Jinja2==3.1.6
+jiter==0.13.0
+jsonschema==4.26.0
+jsonschema-specifications==2025.9.1
+litellm==1.81.8
+Mako==1.3.10
+MarkupSafe==3.0.3
+mcp==1.26.0
+multidict==6.7.1
+openai==2.16.0
+openai-agents==0.8.0
+packaging==26.0
+passlib==1.7.4
+propcache==0.4.1
+psycopg2-binary==2.9.11
+pyasn1==0.6.2
+pycparser==3.0
+pydantic==2.12.5
+pydantic-settings==2.12.0
+pydantic_core==2.41.5
+PyJWT==2.11.0
+python-dotenv==1.0.0
+python-jose==3.3.0
+python-multipart==0.0.22
+PyYAML==6.0.3
+referencing==0.37.0
+regex==2026.1.15
+requests==2.32.5
+rpds-py==0.30.0
+rsa==4.9.1
+shellingham==1.5.4
+six==1.17.0
+sniffio==1.3.1
+SQLAlchemy==2.0.23
+sqlmodel==0.0.16
+sse-starlette==3.2.0
+starlette==0.27.0
+tiktoken==0.12.0
+tokenizers==0.22.2
+tqdm==4.67.3
+typer-slim==0.21.1
+types-requests==2.32.4.20260107
+typing-inspection==0.4.2
+typing_extensions==4.15.0
+urllib3==2.6.3
+uvicorn==0.40.0
+watchfiles==1.1.1
+websockets==16.0
+yarl==1.22.0
+zipp==3.23.0

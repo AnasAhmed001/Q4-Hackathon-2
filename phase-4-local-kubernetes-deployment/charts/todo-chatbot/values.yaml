@@ -1,0 +1,80 @@
+# Single source of truth for ports, replica counts, images and resource
+# boundaries (D3, FR-006, FR-009, FR-015).
+#
+# deploy/deploy.sh READS nodePort out of this file to inject NEXT_PUBLIC_* build
+# args into the frontend image. The same values are used by the templates here,
+# so the chart and the browser bundle cannot drift.
+#
+# No credential may ever be added to this file — the chart references an
+# existing Secret by name only (FR-007).
+
+nameOverride: ""
+fullnameOverride: ""
+
+# Materialized by deploy/deploy.sh from the gitignored deploy/.env.deploy.
+# Referenced, never defined here.
+existingSecret: todo-chatbot-secrets
+
+serviceAccount:
+  create: true
+  name: ""
+
+frontend:
+  replicaCount: 1
+  image:
+    repository: todo-chatbot-frontend
+    tag: dev
+    pullPolicy: IfNotPresent
+  containerPort: 3000
+  # Pinned, never cluster-assigned (FR-006). Browser-facing: http://localhost:30080
+  nodePort: 30080
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+backend:
+  replicaCount: 1
+  image:
+    repository: todo-chatbot-backend
+    tag: dev
+    pullPolicy: IfNotPresent
+  containerPort: 7860
+  # Pinned, never cluster-assigned (FR-006). Browser-facing: http://localhost:30800
+  nodePort: 30800
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# Non-sensitive runtime configuration only (D6, FR-007).
+config:
+  # Consumed by the FRONTEND's SERVER code for token fetches and auth API calls.
+  # Must be the in-cluster Service DNS — server-side fetch from localhost:30080
+  # resolves to the pod's own loopback and fails ECONNREFUSED.
+  betterAuthUrl: "http://todo-chatbot-frontend:3000"
+  # Consumed by the BACKEND. The D6 trap: this must be the in-cluster Service
+  # DNS, never localhost:30080 — the backend fetches JWKS over the pod network
+  # and would otherwise call itself and 401 every request.
+  # jwt_validator.py:51 gives this variable priority over BETTER_AUTH_URL.
+  betterAuthJwksUrl: "http://todo-chatbot-frontend:3000/api/auth/jwks"
+  # Consumed by the FRONTEND's SERVER code — route handlers and server actions.
+  # The mirror of betterAuthUrl above: the browser needs the host-published
+  # address, but the pod's own server-side fetches must use in-cluster DNS.
+  # This is exactly the D6 trap one level down — a server-side `fetch` to
+  # localhost:30800 resolves to the pod's OWN loopback and fails ECONNREFUSED.
+  backendUrl: "http://todo-chatbot-backend:7860"
+  # Consumed by BOTH: backend CORS and frontend trustedOrigins (K1). Comma-separated.
+  allowedOrigins: "http://localhost:30080"
+  # K2 — the container is served over plain HTTP, so Secure cookies are disabled.
+  betterAuthSecureCookies: "false"
+  nodeEnv: "production"
+  environment: "production"
+  logLevel: "info"
+  cohereModel: "command-a-03-2025"

@@ -3,7 +3,9 @@
     "allow": [
       "Bash(bash .specify/scripts/bash/check-prerequisites.sh --json --paths-only)",
       "Bash(bash .specify/scripts/bash/create-phr.sh --title \"Phase IV Spec Clarification Interview\" --stage spec --feature local-kubernetes-deployment --json)",
-      "Bash(.specify/scripts/bash/setup-plan.sh --json)"
+      "Bash(.specify/scripts/bash/setup-plan.sh --json)",
+      "Bash(bash .specify/scripts/bash/check-prerequisites.sh --json)",
+      "Bash(echo \"exit=$?\")"
     ]
   }
 }

@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "todo-chatbot.configMapName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "todo-chatbot.labels" . | nindent 4 }}
+# NON-SENSITIVE runtime configuration only (D6, FR-007).
+#
+# Deliberately absent: every NEXT_PUBLIC_* value. Those are inlined into the
+# browser bundle by `next build` and the running container ignores them, so
+# listing them here would be misleading (see contracts/env-contract.md §3).
+# BACKEND_URL is the runtime COUNTERPART of NEXT_PUBLIC_BACKEND_URL and is
+# present for the opposite reason: the frontend's SERVER code reads it at
+# container start, which is what lets the pod reach the backend by Service DNS
+# while the browser keeps using the host-published port.
+# Also absent: every credential — those live in the Secret named by
+# .Values.existingSecret.
+data:
+  BETTER_AUTH_URL: {{ .Values.config.betterAuthUrl | quote }}
+  BACKEND_URL: {{ .Values.config.backendUrl | quote }}
+  BETTER_AUTH_JWKS_URL: {{ .Values.config.betterAuthJwksUrl | quote }}
+  ALLOWED_ORIGINS: {{ .Values.config.allowedOrigins | quote }}
+  BETTER_AUTH_SECURE_COOKIES: {{ .Values.config.betterAuthSecureCookies | quote }}
+  NODE_ENV: {{ .Values.config.nodeEnv | quote }}
+  ENVIRONMENT: {{ .Values.config.environment | quote }}
+  LOG_LEVEL: {{ .Values.config.logLevel | quote }}
+  COHERE_MODEL: {{ .Values.config.cohereModel | quote }}

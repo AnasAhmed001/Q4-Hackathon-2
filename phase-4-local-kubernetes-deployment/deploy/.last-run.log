@@ -1,0 +1,609 @@
+
+[1;34m==> Step 1/7 — toolchain (FR-021: installing it is part of this procedure)[0m
+[1;32m  ✓ docker [0m
+[1;32m  ✓ minikube v1.38.1[0m
+[1;32m  ✓ helm v4.2.3+g43e8b7f[0m
+[1;32m  ✓ kubectl v1.34.1[0m
+
+[1;34m==> Step 2/7 — cluster and host reachability (T033, FR-006)[0m
+[1;32m  ✓ pinned ports read from values.yaml — frontend 30080, backend 30800[0m
+[1;32m  ✓ minikube already running[0m
+[1;32m  ✓ host reachability via --ports: http://localhost:30080 (HTTP 200)[0m
+
+[1;34m==> Step 3/7 — build both images (FR-001, D1)[0m
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 775B 0.1s done
+#1 DONE 0.1s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 ...
+
+#3 [auth] library/python:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 9.9s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 220B 0.0s done
+#4 DONE 0.1s
+
+#5 [1/5] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#5 resolve docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#5 ...
+
+#6 [internal] load build context
+#6 transferring context: 6.00kB 0.1s done
+#6 DONE 0.4s
+
+#5 [1/5] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#5 resolve docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 0.3s done
+#5 DONE 0.6s
+
+#5 [1/5] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#5 sha256:bbc5a12237474ec0b23b5051260d56d6436a24d70d9cad961adebe7a037ed813 0B / 249B 0.2s
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 0B / 12.12MB 0.2s
+#5 sha256:75b6a36c64a1cf3520fc4b4aae4739d5caa8a6a05c27835a920a61784c9c32f8 0B / 1.29MB 0.2s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 0B / 29.84MB 0.2s
+#5 sha256:bbc5a12237474ec0b23b5051260d56d6436a24d70d9cad961adebe7a037ed813 249B / 249B 0.6s done
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 0B / 12.12MB 5.3s
+#5 sha256:75b6a36c64a1cf3520fc4b4aae4739d5caa8a6a05c27835a920a61784c9c32f8 0B / 1.29MB 5.3s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 0B / 29.84MB 5.3s
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 1.05MB / 12.12MB 7.8s
+#5 sha256:75b6a36c64a1cf3520fc4b4aae4739d5caa8a6a05c27835a920a61784c9c32f8 1.05MB / 1.29MB 8.4s
+#5 sha256:75b6a36c64a1cf3520fc4b4aae4739d5caa8a6a05c27835a920a61784c9c32f8 1.29MB / 1.29MB 8.6s done
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 2.10MB / 12.12MB 9.5s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 0B / 29.84MB 12.7s
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 2.10MB / 12.12MB 14.5s
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 3.15MB / 12.12MB 16.8s
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 4.19MB / 12.12MB 17.4s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 2.10MB / 29.84MB 17.9s
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 5.24MB / 12.12MB 19.0s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 2.10MB / 29.84MB 22.9s
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 5.24MB / 12.12MB 24.1s
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 6.29MB / 12.12MB 24.4s
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 7.34MB / 12.12MB 26.1s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 3.15MB / 29.84MB 28.0s
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 8.39MB / 12.12MB 28.8s
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 9.44MB / 12.12MB 30.9s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 5.24MB / 29.84MB 31.2s
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 10.49MB / 12.12MB 33.1s
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 11.53MB / 12.12MB 36.0s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 7.34MB / 29.84MB 36.1s
+#5 sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 12.12MB / 12.12MB 36.6s done
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 9.44MB / 29.84MB 38.1s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 11.53MB / 29.84MB 40.2s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 12.58MB / 29.84MB 45.5s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 14.68MB / 29.84MB 47.7s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 16.78MB / 29.84MB 49.4s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 18.87MB / 29.84MB 51.6s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 20.97MB / 29.84MB 54.5s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 22.02MB / 29.84MB 59.6s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 24.12MB / 29.84MB 63.3s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 26.21MB / 29.84MB 65.0s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 27.26MB / 29.84MB 70.1s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 29.36MB / 29.84MB 72.5s
+#5 sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 29.84MB / 29.84MB 74.0s done
+#5 extracting sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e
+#5 extracting sha256:ecc510c1e359bdc007b39802570bb7e4dec7d6ebccf357c3201a74299113e05e 5.6s done
+#5 DONE 80.3s
+
+#5 [1/5] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#5 extracting sha256:75b6a36c64a1cf3520fc4b4aae4739d5caa8a6a05c27835a920a61784c9c32f8
+#5 extracting sha256:75b6a36c64a1cf3520fc4b4aae4739d5caa8a6a05c27835a920a61784c9c32f8 0.3s done
+#5 extracting sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4
+#5 extracting sha256:6912e23eb44595b44dc6d9882b34f305ad6f6e9667cec70b13e5dbc4f8cd97f4 1.6s done
+#5 DONE 82.3s
+
+#5 [1/5] FROM docker.io/library/python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+#5 extracting sha256:bbc5a12237474ec0b23b5051260d56d6436a24d70d9cad961adebe7a037ed813 0.0s done
+#5 DONE 82.3s
+
+#7 [2/5] WORKDIR /app
+#7 DONE 0.5s
+
+#8 [3/5] COPY requirements.lock.txt .
+#8 DONE 0.1s
+
+#9 [4/5] RUN pip install --no-cache-dir --no-deps -r requirements.lock.txt
+#9 5.546 Collecting aiohappyeyeballs==2.6.1 (from -r requirements.lock.txt (line 27))
+#9 6.746   Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl.metadata (5.9 kB)
+#9 12.67 Collecting aiohttp==3.13.3 (from -r requirements.lock.txt (line 28))
+#9 12.79   Downloading aiohttp-3.13.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (8.1 kB)
+#9 12.95 Collecting aiosignal==1.4.0 (from -r requirements.lock.txt (line 29))
+#9 13.11   Downloading aiosignal-1.4.0-py3-none-any.whl.metadata (3.7 kB)
+#9 13.45 Collecting alembic==1.13.1 (from -r requirements.lock.txt (line 30))
+#9 13.74   Downloading alembic-1.13.1-py3-none-any.whl.metadata (7.4 kB)
+#9 13.97 Collecting annotated-types==0.7.0 (from -r requirements.lock.txt (line 31))
+#9 14.16   Downloading annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+#9 14.86 Collecting anyio==4.12.1 (from -r requirements.lock.txt (line 32))
+#9 15.24   Downloading anyio-4.12.1-py3-none-any.whl.metadata (4.3 kB)
+#9 16.68 Collecting asyncpg==0.29.0 (from -r requirements.lock.txt (line 33))
+#9 16.86   Downloading asyncpg-0.29.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.4 kB)
+#9 17.19 Collecting attrs==25.4.0 (from -r requirements.lock.txt (line 34))
+#9 17.31   Downloading attrs-25.4.0-py3-none-any.whl.metadata (10 kB)
+#9 17.76 Collecting bcrypt==5.0.0 (from -r requirements.lock.txt (line 35))
+#9 17.88   Downloading bcrypt-5.0.0-cp39-abi3-manylinux_2_34_x86_64.whl.metadata (10 kB)
+#9 18.12 Collecting certifi==2026.1.4 (from -r requirements.lock.txt (line 36))
+#9 18.26   Downloading certifi-2026.1.4-py3-none-any.whl.metadata (2.5 kB)
+#9 19.38 Collecting cffi==2.0.0 (from -r requirements.lock.txt (line 37))
+#9 19.55   Downloading cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.6 kB)
+#9 21.25 Collecting charset-normalizer==3.4.4 (from -r requirements.lock.txt (line 38))
+#9 21.39   Downloading charset_normalizer-3.4.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (37 kB)
+#9 22.02 Collecting click==8.3.1 (from -r requirements.lock.txt (line 39))
+#9 22.13   Downloading click-8.3.1-py3-none-any.whl.metadata (2.6 kB)
+#9 22.93 Collecting cohere==5.20.4 (from -r requirements.lock.txt (line 40))
+#9 23.08   Downloading cohere-5.20.4-py3-none-any.whl.metadata (3.5 kB)
+#9 23.47 Collecting colorama==0.4.6 (from -r requirements.lock.txt (line 41))
+#9 23.59   Downloading colorama-0.4.6-py2.py3-none-any.whl.metadata (17 kB)
+#9 30.68 Collecting cryptography==46.0.4 (from -r requirements.lock.txt (line 42))
+#9 30.79   Downloading cryptography-46.0.4-cp311-abi3-manylinux_2_34_x86_64.whl.metadata (5.7 kB)
+#9 31.00 Collecting distro==1.9.0 (from -r requirements.lock.txt (line 43))
+#9 31.14   Downloading distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+#9 31.56 Collecting ecdsa==0.19.1 (from -r requirements.lock.txt (line 44))
+#9 31.72   Downloading ecdsa-0.19.1-py2.py3-none-any.whl.metadata (29 kB)
+#9 32.48 Collecting fastapi==0.104.1 (from -r requirements.lock.txt (line 45))
+#9 32.66   Downloading fastapi-0.104.1-py3-none-any.whl.metadata (24 kB)
+#9 35.02 Collecting fastavro==1.12.1 (from -r requirements.lock.txt (line 46))
+#9 35.34   Downloading fastavro-1.12.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.8 kB)
+#9 36.86 Collecting fastuuid==0.14.0 (from -r requirements.lock.txt (line 47))
+#9 36.98   Downloading fastuuid-0.14.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (1.1 kB)
+#9 37.32 Collecting filelock==3.20.3 (from -r requirements.lock.txt (line 48))
+#9 37.45   Downloading filelock-3.20.3-py3-none-any.whl.metadata (2.1 kB)
+#9 37.87 Collecting frozenlist==1.8.0 (from -r requirements.lock.txt (line 49))
+#9 37.99   Downloading frozenlist-1.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (20 kB)
+#9 38.33 Collecting fsspec==2026.1.0 (from -r requirements.lock.txt (line 50))
+#9 38.46   Downloading fsspec-2026.1.0-py3-none-any.whl.metadata (10 kB)
+#9 42.23 Collecting greenlet==3.3.1 (from -r requirements.lock.txt (line 51))
+#9 42.35   Downloading greenlet-3.3.1-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (3.7 kB)
+#9 46.95 Collecting griffe==1.15.0 (from -r requirements.lock.txt (line 52))
+#9 47.12   Downloading griffe-1.15.0-py3-none-any.whl.metadata (5.2 kB)
+#9 47.41 Collecting h11==0.16.0 (from -r requirements.lock.txt (line 53))
+#9 47.64   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#9 50.75 Collecting hf-xet==1.2.0 (from -r requirements.lock.txt (line 54))
+#9 50.93   Downloading hf_xet-1.2.0-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+#9 52.32 Collecting httpcore==1.0.9 (from -r requirements.lock.txt (line 55))
+#9 52.87   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+#9 54.92 Collecting httptools==0.7.1 (from -r requirements.lock.txt (line 56))
+#9 56.39   Downloading httptools-0.7.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+#9 56.73 Collecting httpx==0.28.1 (from -r requirements.lock.txt (line 57))
+#9 61.28   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+#9 62.13 Collecting httpx-sse==0.4.3 (from -r requirements.lock.txt (line 58))
+#9 62.26   Downloading httpx_sse-0.4.3-py3-none-any.whl.metadata (9.7 kB)
+#9 63.58 Collecting huggingface_hub==1.4.0 (from -r requirements.lock.txt (line 59))
+#9 63.69   Downloading huggingface_hub-1.4.0-py3-none-any.whl.metadata (13 kB)
+#9 64.13 Collecting idna==3.11 (from -r requirements.lock.txt (line 60))
+#9 64.46   Downloading idna-3.11-py3-none-any.whl.metadata (8.4 kB)
+#9 65.55 Collecting importlib_metadata==8.7.1 (from -r requirements.lock.txt (line 61))
+#9 65.82   Downloading importlib_metadata-8.7.1-py3-none-any.whl.metadata (4.7 kB)
+#9 66.43 Collecting Jinja2==3.1.6 (from -r requirements.lock.txt (line 62))
+#9 66.67   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+#9 68.52 Collecting jiter==0.13.0 (from -r requirements.lock.txt (line 63))
+#9 68.66   Downloading jiter-0.13.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.2 kB)
+#9 69.26 Collecting jsonschema==4.26.0 (from -r requirements.lock.txt (line 64))
+#9 69.69   Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+#9 70.10 Collecting jsonschema-specifications==2025.9.1 (from -r requirements.lock.txt (line 65))
+#9 70.24   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+#9 74.46 Collecting litellm==1.81.8 (from -r requirements.lock.txt (line 66))
+#9 74.60   Downloading litellm-1.81.8-py3-none-any.whl.metadata (30 kB)
+#9 77.19 Collecting Mako==1.3.10 (from -r requirements.lock.txt (line 67))
+#9 77.40   Downloading mako-1.3.10-py3-none-any.whl.metadata (2.9 kB)
+#9 78.81 Collecting MarkupSafe==3.0.3 (from -r requirements.lock.txt (line 68))
+#9 79.39   Downloading markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+#9 79.89 Collecting mcp==1.26.0 (from -r requirements.lock.txt (line 69))
+#9 80.16   Downloading mcp-1.26.0-py3-none-any.whl.metadata (89 kB)
+#9 90.20 Collecting multidict==6.7.1 (from -r requirements.lock.txt (line 70))
+#9 93.59   Downloading multidict-6.7.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.3 kB)
+#9 94.38 Collecting openai==2.16.0 (from -r requirements.lock.txt (line 71))
+#9 94.50   Downloading openai-2.16.0-py3-none-any.whl.metadata (29 kB)
+#9 95.46 Collecting openai-agents==0.8.0 (from -r requirements.lock.txt (line 72))
+#9 95.73   Downloading openai_agents-0.8.0-py3-none-any.whl.metadata (13 kB)
+#9 96.33 Collecting packaging==26.0 (from -r requirements.lock.txt (line 73))
+#9 96.72   Downloading packaging-26.0-py3-none-any.whl.metadata (3.3 kB)
+#9 96.96 Collecting passlib==1.7.4 (from -r requirements.lock.txt (line 74))
+#9 97.37   Downloading passlib-1.7.4-py2.py3-none-any.whl.metadata (1.7 kB)
+#9 100.2 Collecting propcache==0.4.1 (from -r requirements.lock.txt (line 75))
+#9 100.4   Downloading propcache-0.4.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (13 kB)
+#9 102.2 Collecting psycopg2-binary==2.9.11 (from -r requirements.lock.txt (line 76))
+#9 102.3   Downloading psycopg2_binary-2.9.11-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (4.9 kB)
+#9 102.9 Collecting pyasn1==0.6.2 (from -r requirements.lock.txt (line 77))
+#9 103.1   Downloading pyasn1-0.6.2-py3-none-any.whl.metadata (8.4 kB)
+#9 103.7 Collecting pycparser==3.0 (from -r requirements.lock.txt (line 78))
+#9 104.1   Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+#9 106.9 Collecting pydantic==2.12.5 (from -r requirements.lock.txt (line 79))
+#9 107.1   Downloading pydantic-2.12.5-py3-none-any.whl.metadata (90 kB)
+#9 108.4 Collecting pydantic-settings==2.12.0 (from -r requirements.lock.txt (line 80))
+#9 108.6   Downloading pydantic_settings-2.12.0-py3-none-any.whl.metadata (3.4 kB)
+#9 119.1 Collecting pydantic_core==2.41.5 (from -r requirements.lock.txt (line 81))
+#9 119.3   Downloading pydantic_core-2.41.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (7.3 kB)
+#9 119.5 Collecting PyJWT==2.11.0 (from -r requirements.lock.txt (line 82))
+#9 119.7   Downloading pyjwt-2.11.0-py3-none-any.whl.metadata (4.0 kB)
+#9 120.0 Collecting python-dotenv==1.0.0 (from -r requirements.lock.txt (line 83))
+#9 120.3   Downloading python_dotenv-1.0.0-py3-none-any.whl.metadata (21 kB)
+#9 120.7 Collecting python-jose==3.3.0 (from -r requirements.lock.txt (line 84))
+#9 120.8   Downloading python_jose-3.3.0-py2.py3-none-any.whl.metadata (5.4 kB)
+#9 121.0 Collecting python-multipart==0.0.22 (from -r requirements.lock.txt (line 85))
+#9 121.2   Downloading python_multipart-0.0.22-py3-none-any.whl.metadata (1.8 kB)
+#9 121.5 Collecting PyYAML==6.0.3 (from -r requirements.lock.txt (line 86))
+#9 121.6   Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+#9 121.8 Collecting referencing==0.37.0 (from -r requirements.lock.txt (line 87))
+#9 121.9   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+#9 126.5 Collecting regex==2026.1.15 (from -r requirements.lock.txt (line 88))
+#9 126.9   Downloading regex-2026.1.15-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+#9 128.2 Collecting requests==2.32.5 (from -r requirements.lock.txt (line 89))
+#9 128.5   Downloading requests-2.32.5-py3-none-any.whl.metadata (4.9 kB)
+#9 130.8 Collecting rpds-py==0.30.0 (from -r requirements.lock.txt (line 90))
+#9 131.0   Downloading rpds_py-0.30.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+#9 131.2 Collecting rsa==4.9.1 (from -r requirements.lock.txt (line 91))
+#9 131.3   Downloading rsa-4.9.1-py3-none-any.whl.metadata (5.6 kB)
+#9 131.5 Collecting shellingham==1.5.4 (from -r requirements.lock.txt (line 92))
+#9 131.7   Downloading shellingham-1.5.4-py2.py3-none-any.whl.metadata (3.5 kB)
+#9 132.0 Collecting six==1.17.0 (from -r requirements.lock.txt (line 93))
+#9 132.2   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+#9 132.3 Collecting sniffio==1.3.1 (from -r requirements.lock.txt (line 94))
+#9 132.5   Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+#9 134.9 Collecting SQLAlchemy==2.0.23 (from -r requirements.lock.txt (line 95))
+#9 135.0   Downloading SQLAlchemy-2.0.23-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (9.6 kB)
+#9 135.2 Collecting sqlmodel==0.0.16 (from -r requirements.lock.txt (line 96))
+#9 135.3   Downloading sqlmodel-0.0.16-py3-none-any.whl.metadata (9.8 kB)
+#9 135.7 Collecting sse-starlette==3.2.0 (from -r requirements.lock.txt (line 97))
+#9 135.9   Downloading sse_starlette-3.2.0-py3-none-any.whl.metadata (12 kB)
+#9 136.9 Collecting starlette==0.27.0 (from -r requirements.lock.txt (line 98))
+#9 137.1   Downloading starlette-0.27.0-py3-none-any.whl.metadata (5.8 kB)
+#9 137.7 Collecting tiktoken==0.12.0 (from -r requirements.lock.txt (line 99))
+#9 137.8   Downloading tiktoken-0.12.0-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (6.7 kB)
+#9 138.9 Collecting tokenizers==0.22.2 (from -r requirements.lock.txt (line 100))
+#9 139.0   Downloading tokenizers-0.22.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (7.3 kB)
+#9 139.2 Collecting tqdm==4.67.3 (from -r requirements.lock.txt (line 101))
+#9 139.3   Downloading tqdm-4.67.3-py3-none-any.whl.metadata (57 kB)
+#9 139.6 Collecting typer-slim==0.21.1 (from -r requirements.lock.txt (line 102))
+#9 139.8   Downloading typer_slim-0.21.1-py3-none-any.whl.metadata (16 kB)
+#9 140.0 Collecting types-requests==2.32.4.20260107 (from -r requirements.lock.txt (line 103))
+#9 140.2   Downloading types_requests-2.32.4.20260107-py3-none-any.whl.metadata (2.0 kB)
+#9 140.3 Collecting typing-inspection==0.4.2 (from -r requirements.lock.txt (line 104))
+#9 140.4   Downloading typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
+#9 140.7 Collecting typing_extensions==4.15.0 (from -r requirements.lock.txt (line 105))
+#9 140.8   Downloading typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+#9 141.0 Collecting urllib3==2.6.3 (from -r requirements.lock.txt (line 106))
+#9 141.2   Downloading urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
+#9 141.5 Collecting uvicorn==0.40.0 (from -r requirements.lock.txt (line 107))
+#9 141.7   Downloading uvicorn-0.40.0-py3-none-any.whl.metadata (6.7 kB)
+#9 142.4 Collecting watchfiles==1.1.1 (from -r requirements.lock.txt (line 108))
+#9 142.6   Downloading watchfiles-1.1.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+#9 144.2 Collecting websockets==16.0 (from -r requirements.lock.txt (line 109))
+#9 144.3   Downloading websockets-16.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.8 kB)
+#9 147.7 Collecting yarl==1.22.0 (from -r requirements.lock.txt (line 110))
+#9 148.0   Downloading yarl-1.22.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (75 kB)
+#9 148.6 Collecting zipp==3.23.0 (from -r requirements.lock.txt (line 111))
+#9 148.9   Downloading zipp-3.23.0-py3-none-any.whl.metadata (3.6 kB)
+#9 149.3 Downloading aiohappyeyeballs-2.6.1-py3-none-any.whl (15 kB)
+#9 149.6 Downloading aiohttp-3.13.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.8 MB)
+#9 154.9    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 612.6 kB/s eta 0:00:00
+#9 155.0 Downloading aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+#9 155.2 Downloading alembic-1.13.1-py3-none-any.whl (233 kB)
+#9 155.4 Downloading annotated_types-0.7.0-py3-none-any.whl (13 kB)
+#9 155.5 Downloading anyio-4.12.1-py3-none-any.whl (113 kB)
+#9 155.8 Downloading asyncpg-0.29.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.3 MB)
+#9 170.4    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 257.1 kB/s eta 0:00:00
+#9 170.6 Downloading attrs-25.4.0-py3-none-any.whl (67 kB)
+#9 171.2 Downloading bcrypt-5.0.0-cp39-abi3-manylinux_2_34_x86_64.whl (278 kB)
+#9 172.6 Downloading certifi-2026.1.4-py3-none-any.whl (152 kB)
+#9 173.4 Downloading cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (219 kB)
+#9 174.3 Downloading charset_normalizer-3.4.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (153 kB)
+#9 174.7 Downloading click-8.3.1-py3-none-any.whl (108 kB)
+#9 175.0 Downloading cohere-5.20.4-py3-none-any.whl (318 kB)
+#9 175.7 Downloading colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+#9 175.8 Downloading cryptography-46.0.4-cp311-abi3-manylinux_2_34_x86_64.whl (4.5 MB)
+#9 192.6    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 304.6 kB/s eta 0:00:00
+#9 192.7 Downloading distro-1.9.0-py3-none-any.whl (20 kB)
+#9 193.0 Downloading ecdsa-0.19.1-py2.py3-none-any.whl (150 kB)
+#9 193.9 Downloading fastapi-0.104.1-py3-none-any.whl (92 kB)
+#9 194.1 Downloading fastavro-1.12.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.5 MB)
+#9 203.8    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.5/3.5 MB 340.2 kB/s eta 0:00:00
+#9 203.9 Downloading fastuuid-0.14.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (278 kB)
+#9 205.6 Downloading filelock-3.20.3-py3-none-any.whl (16 kB)
+#9 205.9 Downloading frozenlist-1.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (242 kB)
+#9 206.4 Downloading fsspec-2026.1.0-py3-none-any.whl (201 kB)
+#9 207.7 Downloading greenlet-3.3.1-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (609 kB)
+#9 210.1    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 609.9/609.9 kB 187.7 kB/s eta 0:00:00
+#9 210.2 Downloading griffe-1.15.0-py3-none-any.whl (150 kB)
+#9 211.4 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#9 212.0 Downloading hf_xet-1.2.0-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.3 MB)
+#9 225.0    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 259.8 kB/s eta 0:00:00
+#9 225.1 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+#9 225.3 Downloading httptools-0.7.1-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (517 kB)
+#9 226.3 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+#9 226.5 Downloading httpx_sse-0.4.3-py3-none-any.whl (9.0 kB)
+#9 226.7 Downloading huggingface_hub-1.4.0-py3-none-any.whl (553 kB)
+#9 227.3    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 553.2/553.2 kB 966.4 kB/s eta 0:00:00
+#9 227.5 Downloading idna-3.11-py3-none-any.whl (71 kB)
+#9 227.9 Downloading importlib_metadata-8.7.1-py3-none-any.whl (27 kB)
+#9 228.1 Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+#9 228.5 Downloading jiter-0.13.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (360 kB)
+#9 229.3 Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+#9 230.0 Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+#9 230.2 Downloading litellm-1.81.8-py3-none-any.whl (12.3 MB)
+#9 326.8    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 55.4 kB/s eta 0:00:00
+#9 327.0 Downloading mako-1.3.10-py3-none-any.whl (78 kB)
+#9 327.5 Downloading markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+#9 327.8 Downloading mcp-1.26.0-py3-none-any.whl (233 kB)
+#9 330.9 Downloading multidict-6.7.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (256 kB)
+#9 335.3 Downloading openai-2.16.0-py3-none-any.whl (1.1 MB)
+#9 353.8    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 48.5 kB/s eta 0:00:00
+#9 355.1 Downloading openai_agents-0.8.0-py3-none-any.whl (373 kB)
+#9 364.9 Downloading packaging-26.0-py3-none-any.whl (74 kB)
+#9 365.9 Downloading passlib-1.7.4-py2.py3-none-any.whl (525 kB)
+#9 371.6    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 525.6/525.6 kB 57.2 kB/s eta 0:00:00
+#9 371.8 Downloading propcache-0.4.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (221 kB)
+#9 382.3 Downloading psycopg2_binary-2.9.11-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (4.2 MB)
+#9 392.4    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.2/4.2 MB 436.8 kB/s eta 0:00:00
+#9 392.8 Downloading pyasn1-0.6.2-py3-none-any.whl (83 kB)
+#9 394.6 Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+#9 396.5 Downloading pydantic-2.12.5-py3-none-any.whl (463 kB)
+#9 407.7 Downloading pydantic_settings-2.12.0-py3-none-any.whl (51 kB)
+#9 411.2 Downloading pydantic_core-2.41.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)
+#9 441.2    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 68.4 kB/s eta 0:00:00
+#9 441.4 Downloading pyjwt-2.11.0-py3-none-any.whl (28 kB)
+#9 441.9 Downloading python_dotenv-1.0.0-py3-none-any.whl (19 kB)
+#9 442.0 Downloading python_jose-3.3.0-py2.py3-none-any.whl (33 kB)
+#9 442.4 Downloading python_multipart-0.0.22-py3-none-any.whl (24 kB)
+#9 442.9 Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+#9 448.8    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 165.0 kB/s eta 0:00:00
+#9 448.9 Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+#9 449.3 Downloading regex-2026.1.15-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (803 kB)
+#9 454.8    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 803.6/803.6 kB 131.9 kB/s eta 0:00:00
+#9 455.0 Downloading requests-2.32.5-py3-none-any.whl (64 kB)
+#9 455.6 Downloading rpds_py-0.30.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (394 kB)
+#9 458.2 Downloading rsa-4.9.1-py3-none-any.whl (34 kB)
+#9 458.6 Downloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)
+#9 458.8 Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+#9 459.2 Downloading sniffio-1.3.1-py3-none-any.whl (10 kB)
+#9 459.4 Downloading SQLAlchemy-2.0.23-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.2 MB)
+#9 478.8    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 192.5 kB/s eta 0:00:00
+#9 479.0 Downloading sqlmodel-0.0.16-py3-none-any.whl (26 kB)
+#9 479.1 Downloading sse_starlette-3.2.0-py3-none-any.whl (12 kB)
+#9 479.3 Downloading starlette-0.27.0-py3-none-any.whl (66 kB)
+#9 479.7 Downloading tiktoken-0.12.0-cp312-cp312-manylinux_2_28_x86_64.whl (1.2 MB)
+#9 482.4    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 463.9 kB/s eta 0:00:00
+#9 482.6 Downloading tokenizers-0.22.2-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (3.3 MB)
+#9 496.3    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 256.3 kB/s eta 0:00:00
+#9 496.4 Downloading tqdm-4.67.3-py3-none-any.whl (78 kB)
+#9 496.6 Downloading typer_slim-0.21.1-py3-none-any.whl (47 kB)
+#9 496.7 Downloading types_requests-2.32.4.20260107-py3-none-any.whl (20 kB)
+#9 496.9 Downloading typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+#9 497.0 Downloading typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+#9 497.3 Downloading urllib3-2.6.3-py3-none-any.whl (131 kB)
+#9 497.6 Downloading uvicorn-0.40.0-py3-none-any.whl (68 kB)
+#9 498.0 Downloading watchfiles-1.1.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (456 kB)
+#9 501.5 Downloading websockets-16.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (184 kB)
+#9 502.2 Downloading yarl-1.22.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (377 kB)
+#9 504.7 Downloading zipp-3.23.0-py3-none-any.whl (10 kB)
+#9 505.3 Installing collected packages: python-jose, passlib, zipp, yarl, websockets, watchfiles, uvicorn, urllib3, typing-inspection, typing_extensions, types-requests, typer-slim, tqdm, tokenizers, tiktoken, starlette, sse-starlette, sqlmodel, SQLAlchemy, sniffio, six, shellingham, rsa, rpds-py, requests, regex, referencing, PyYAML, python-multipart, python-dotenv, PyJWT, pydantic-settings, pydantic_core, pydantic, pycparser, pyasn1, psycopg2-binary, propcache, packaging, openai-agents, openai, multidict, mcp, MarkupSafe, Mako, litellm, jsonschema-specifications, jsonschema, jiter, Jinja2, importlib_metadata, idna, huggingface_hub, httpx-sse, httpx, httptools, httpcore, hf-xet, h11, griffe, greenlet, fsspec, frozenlist, filelock, fastuuid, fastavro, fastapi, ecdsa, distro, cryptography, colorama, cohere, click, charset-normalizer, cffi, certifi, bcrypt, attrs, asyncpg, anyio, annotated-types, alembic, aiosignal, aiohttp, aiohappyeyeballs
+#9 537.2 Successfully installed Jinja2-3.1.6 Mako-1.3.10 MarkupSafe-3.0.3 PyJWT-2.11.0 PyYAML-6.0.3 SQLAlchemy-2.0.23 aiohappyeyeballs-2.6.1 aiohttp-3.13.3 aiosignal-1.4.0 alembic-1.13.1 annotated-types-0.7.0 anyio-4.12.1 asyncpg-0.29.0 attrs-25.4.0 bcrypt-5.0.0 certifi-2026.1.4 cffi-2.0.0 charset-normalizer-3.4.4 click-8.3.1 cohere-5.20.4 colorama-0.4.6 cryptography-46.0.4 distro-1.9.0 ecdsa-0.19.1 fastapi-0.104.1 fastavro-1.12.1 fastuuid-0.14.0 filelock-3.20.3 frozenlist-1.8.0 fsspec-2026.1.0 greenlet-3.3.1 griffe-1.15.0 h11-0.16.0 hf-xet-1.2.0 httpcore-1.0.9 httptools-0.7.1 httpx-0.28.1 httpx-sse-0.4.3 huggingface_hub-1.4.0 idna-3.11 importlib_metadata-8.7.1 jiter-0.13.0 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 litellm-1.81.8 mcp-1.26.0 multidict-6.7.1 openai-2.16.0 openai-agents-0.8.0 packaging-26.0 passlib-1.7.4 propcache-0.4.1 psycopg2-binary-2.9.11 pyasn1-0.6.2 pycparser-3.0 pydantic-2.12.5 pydantic-settings-2.12.0 pydantic_core-2.41.5 python-dotenv-1.0.0 python-jose-3.3.0 python-multipart-0.0.22 referencing-0.37.0 regex-2026.1.15 requests-2.32.5 rpds-py-0.30.0 rsa-4.9.1 shellingham-1.5.4 six-1.17.0 sniffio-1.3.1 sqlmodel-0.0.16 sse-starlette-3.2.0 starlette-0.27.0 tiktoken-0.12.0 tokenizers-0.22.2 tqdm-4.67.3 typer-slim-0.21.1 types-requests-2.32.4.20260107 typing-inspection-0.4.2 typing_extensions-4.15.0 urllib3-2.6.3 uvicorn-0.40.0 watchfiles-1.1.1 websockets-16.0 yarl-1.22.0 zipp-3.23.0
+#9 537.2 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#9 539.0 
+#9 539.0 [notice] A new release of pip is available: 25.0.1 -> 26.2.1
+#9 539.0 [notice] To update, run: pip install --upgrade pip
+#9 DONE 539.8s
+
+#10 [5/5] COPY . .
+#10 DONE 0.4s
+
+#11 exporting to image
+#11 exporting layers
+#11 exporting layers 23.2s done
+#11 exporting manifest sha256:cecd1a7a6fc3e4959be0180969a1884ad5201545d5448ae0bd54c2e89f8b2006 0.1s done
+#11 exporting config sha256:52aa1ef1726abc2587cac78395f5c31b51058c18d82c4aa39c2310e4ffbc7729 0.0s done
+#11 exporting attestation manifest sha256:7b7b326d2b7f6df0e2b59c8277de76832d7307eb6aa46cabac0410476abd4ac7 3.8s done
+#11 exporting manifest list sha256:3556f1ebe729c91be880f55b2bdf65016abb6130ce9921c114bdb3b9bf9bef2e
+#11 exporting manifest list sha256:3556f1ebe729c91be880f55b2bdf65016abb6130ce9921c114bdb3b9bf9bef2e 0.0s done
+#11 naming to docker.io/library/todo-chatbot-backend:dev done
+#11 unpacking to docker.io/library/todo-chatbot-backend:dev
+#11 unpacking to docker.io/library/todo-chatbot-backend:dev 12.2s done
+#11 DONE 39.5s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/eptul4eox2xwh95j98nsnu5dr
+[1;32m  ✓ built todo-chatbot-backend:dev[0m
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.36kB 0.1s done
+#1 DONE 0.1s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 ...
+
+#3 [auth] docker/dockerfile:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 2.4s
+
+#4 docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#4 resolve docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e 0.1s done
+#4 CACHED
+
+#5 [internal] load metadata for docker.io/library/node:22-alpine
+#5 ...
+
+#6 [auth] library/node:pull token for registry-1.docker.io
+#6 DONE 0.0s
+
+#5 [internal] load metadata for docker.io/library/node:22-alpine
+#5 DONE 1.6s
+
+#7 [internal] load .dockerignore
+#7 transferring context: 707B 0.0s done
+#7 DONE 0.0s
+
+#8 [deps 1/4] FROM docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402
+#8 resolve docker.io/library/node:22-alpine@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402 0.1s done
+#8 DONE 0.1s
+
+#9 [internal] load build context
+#9 transferring context: 15.57kB 0.0s done
+#9 DONE 0.1s
+
+#10 [deps 3/4] COPY package.json package-lock.json ./
+#10 CACHED
+
+#11 [deps 4/4] RUN npm ci
+#11 CACHED
+
+#12 [deps 2/4] WORKDIR /app
+#12 CACHED
+
+#13 [builder 3/5] COPY --from=deps /app/node_modules ./node_modules
+#13 CACHED
+
+#14 [builder 4/5] COPY . .
+#14 DONE 0.2s
+
+#15 [builder 5/5] RUN npm run build
+#15 3.068 
+#15 3.068 > frontend@0.1.0 build
+#15 3.068 > next build
+#15 3.068 
+#15 7.372 Attention: Next.js now collects completely anonymous telemetry regarding usage.
+#15 7.376 This information is used to shape Next.js' roadmap and prioritize features.
+#15 7.377 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+#15 7.378 https://nextjs.org/telemetry
+#15 7.379 
+#15 7.449 ▲ Next.js 16.1.1 (Turbopack)
+#15 7.450 
+#15 7.724   Creating an optimized production build ...
+#15 126.4 ✓ Compiled successfully in 106s
+#15 126.5   Running TypeScript ...
+#15 149.0   Collecting page data using 3 workers ...
+#15 151.5 [Error [BetterAuthError]: You are using the default secret. Please set `BETTER_AUTH_SECRET` in your environment variables or pass `secret` in your auth config.] {
+#15 151.5   cause: undefined
+#15 151.5 }
+#15 151.7 [Error [BetterAuthError]: You are using the default secret. Please set `BETTER_AUTH_SECRET` in your environment variables or pass `secret` in your auth config.] {
+#15 151.7   cause: undefined
+#15 151.7 }
+#15 151.8   Generating static pages using 3 workers (0/10) ...
+#15 152.0   Generating static pages using 3 workers (2/10) 
+#15 152.7 [Error [BetterAuthError]: You are using the default secret. Please set `BETTER_AUTH_SECRET` in your environment variables or pass `secret` in your auth config.] {
+#15 152.7   cause: undefined
+#15 152.7 }
+#15 153.0   Generating static pages using 3 workers (4/10) 
+#15 153.0   Generating static pages using 3 workers (7/10) 
+#15 153.1 ✓ Generating static pages using 3 workers (10/10) in 1359.2ms
+#15 153.2   Finalizing page optimization ...
+#15 154.4 
+#15 154.4 Route (app)
+#15 154.4 ┌ ○ /
+#15 154.4 ├ ○ /_not-found
+#15 154.4 ├ ƒ /api/auth/[...all]
+#15 154.4 ├ ƒ /api/chat/history
+#15 154.4 ├ ƒ /api/chat/send
+#15 154.4 ├ ○ /chat
+#15 154.4 ├ ○ /login
+#15 154.4 ├ ○ /signup
+#15 154.4 ├ ƒ /tasks
+#15 154.4 └ ƒ /tasks/[id]/edit
+#15 154.4 
+#15 154.4 
+#15 154.4 ƒ Proxy (Middleware)
+#15 154.4 
+#15 154.4 ○  (Static)   prerendered as static content
+#15 154.4 ƒ  (Dynamic)  server-rendered on demand
+#15 154.4 
+#15 154.9 npm notice
+#15 154.9 npm notice New major version of npm available! 10.9.9 -> 12.2.0
+#15 154.9 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+#15 154.9 npm notice To update run: npm install -g npm@12.2.0
+#15 154.9 npm notice
+#15 DONE 155.8s
+
+#16 [runner 3/6] COPY --from=builder --chown=node:node /app/public ./public
+#16 CACHED
+
+#17 [runner 4/6] COPY --from=builder --chown=node:node /app/.next/standalone ./
+#17 DONE 1.0s
+
+#18 [runner 5/6] COPY --from=builder --chown=node:node /app/.next/static ./.next/static
+#18 DONE 0.2s
+
+#19 [runner 6/6] RUN mkdir -p /app/.next/cache && chown -R node:node /app/.next
+#19 DONE 2.5s
+
+#20 exporting to image
+#20 exporting layers
+#20 exporting layers 6.5s done
+#20 exporting manifest sha256:1a333d95ae73b7fda824eec63cdad091926a64356c2d8ef4a4c08f14f60c6e8d
+#20 exporting manifest sha256:1a333d95ae73b7fda824eec63cdad091926a64356c2d8ef4a4c08f14f60c6e8d 0.0s done
+#20 exporting config sha256:a5830cbdfddfa9be9548b0aaa09bbc01766e877956dc18462aca968c6ecb2391 0.0s done
+#20 exporting attestation manifest sha256:3cc3a453198bf17f78000462f7952225199021711928a728a0bf71973e5e5f07
+#20 exporting attestation manifest sha256:3cc3a453198bf17f78000462f7952225199021711928a728a0bf71973e5e5f07 0.1s done
+#20 exporting manifest list sha256:424a8cad63901493be9d52aea41db5ba1a56d9e4c980ca34193f00f0db9a8fc4 0.0s done
+#20 naming to docker.io/library/todo-chatbot-frontend:dev
+#20 naming to docker.io/library/todo-chatbot-frontend:dev 0.0s done
+#20 unpacking to docker.io/library/todo-chatbot-frontend:dev
+#20 unpacking to docker.io/library/todo-chatbot-frontend:dev 2.1s done
+#20 DONE 8.9s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/r89zl4h5lia2y218cfgzxt1yh
+[1;32m  ✓ built todo-chatbot-frontend:dev[0m
+
+[1;34m==> Step 4/7 — prove the declared ports actually landed in the bundle (T034)[0m
+[1;32m  ✓ BAKED_OK: localhost:30080[0m
+[1;32m  ✓ BAKED_OK: localhost:30800[0m
+[1;32m  ✓ no .env baked into the frontend image (/ and /app both clean)[0m
+
+[1;34m==> Step 5/7 — make the images available to the cluster (spec edge case)[0m
+[1;32m  ✓ loaded both images into minikube[0m
+
+[1;34m==> Step 6/7 — materialize the Secret (T027, FR-007, FR-010)[0m
+[1;32m  ✓ namespace todo-chatbot present[0m
+[1;32m  ✓ Secret todo-chatbot-secrets applied in namespace todo-chatbot[0m
+[1;32m  ✓ all required secret keys present[0m
+[1;32m  ✓ no secret value is quote-wrapped[0m
+
+[1;34m==> Step 7/7 — install or update the release, then verify (FR-002, FR-012)[0m
+Release "todo-chatbot" has been upgraded. Happy Helming!
+NAME: todo-chatbot
+LAST DEPLOYED: Fri Oct  9 22:32:34 2026
+NAMESPACE: todo-chatbot
+STATUS: deployed
+REVISION: 4
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+NOTES:
+Phase IV — Todo Chatbot is installed in namespace todo-chatbot.
+
+  1. Make sure the cluster's published ports are up (T033):
+       minikube start --driver=docker --cpus=4 --memory=4096 --ports=30080:30080,30800:30800
+     If the driver rejects --ports, use the documented port-forward fallback:
+       kubectl -n todo-chatbot port-forward --address 127.0.0.1 svc/todo-chatbot-frontend 30080:3000
+       kubectl -n todo-chatbot port-forward --address 127.0.0.1 svc/todo-chatbot-backend  30800:7860
+
+  2. Open the application:
+       Frontend  ->  http://localhost:30080
+       Backend   ->  http://localhost:30800/health
+
+  3. Check status:
+       kubectl -n todo-chatbot get pods
+
+  ##########################################################################
+  #  WARNING — CHANGING A DECLARED PORT REQUIRES A FRONTEND IMAGE REBUILD  #
+  #                                                                        #
+  #  The browser-facing URLs are NEXT_PUBLIC_* values inlined by           #
+  #  `next build`. They are compile-time constants: the ConfigMap cannot   #
+  #  correct them at runtime. Edit charts/todo-chatbot/values.yaml, then   #
+  #  re-run deploy/deploy.sh, which rebuilds with the new ports.           #
+  ##########################################################################
+NAME                                    READY   STATUS    RESTARTS       AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+todo-chatbot-backend-59476594c9-db97t   1/1     Running   11 (62m ago)   8d    10.244.0.9    minikube   <none>           <none>
+todo-chatbot-frontend-875dfd748-wqbld   1/1     Running   2 (62m ago)    8d    10.244.0.11   minikube   <none>           <none>
+
+[1;32mDeployment complete.[0m
+  Frontend : http://localhost:30080
+  Backend  : http://localhost:30800/health
+
+  If those are not reachable, start the port-forward fallback:
+    kubectl -n todo-chatbot port-forward --address 127.0.0.1 svc/todo-chatbot-frontend 30080:3000
+    kubectl -n todo-chatbot port-forward --address 127.0.0.1 svc/todo-chatbot-backend  30800:7860
+

@@ -41,16 +41,32 @@ export const auth = betterAuth({
   // Advanced security options
   advanced: {
     cookiePrefix: "better-auth",
-    useSecureCookies: process.env.NODE_ENV === "production",
+    // Phase IV (K2): the container runs NODE_ENV=production but is served over
+    // plain http://localhost:30080. Rather than rely on browsers treating
+    // localhost as a secure context, the Secure attribute is overridable.
+    // Default preserves the previous production-derived behaviour exactly, so
+    // Phase III is unaffected.
+    useSecureCookies:
+      process.env.BETTER_AUTH_SECURE_COOKIES !== undefined
+        ? process.env.BETTER_AUTH_SECURE_COOKIES === "true"
+        : process.env.NODE_ENV === "production",
     crossSubDomainCookies: {
       enabled: false,
     },
   },
 
-  // Trust host for deployment
+  // Trust host for deployment.
+  // Phase IV (K1, FR-007): allowed origins are deploy-time configuration and
+  // must not be embedded in the repository. Derived from ALLOWED_ORIGINS —
+  // the same variable the backend uses for CORS — parsed as a comma-separated
+  // list to match backend-api/src/config/settings.py:normalize_allowed_origins.
+  // The previous hardcoded values remain the default so Phase III is unchanged.
   trustedOrigins: [
-    "http://localhost:3000",
-    "https://q4-hackathon-2.vercel.app",
+    ...(process.env.ALLOWED_ORIGINS
+      ? process.env.ALLOWED_ORIGINS.split(",")
+          .map((origin) => origin.trim())
+          .filter(Boolean)
+      : ["http://localhost:3000", "https://q4-hackathon-2.vercel.app"]),
     ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
   ],
 });

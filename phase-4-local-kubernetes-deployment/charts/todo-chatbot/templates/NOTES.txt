@@ -1,0 +1,23 @@
+Phase IV — Todo Chatbot is installed in namespace {{ .Release.Namespace }}.
+
+  1. Make sure the cluster's published ports are up (T033):
+       minikube start --driver=docker --cpus=4 --memory=4096 --ports=30080:30080,30800:30800
+     If the driver rejects --ports, use the documented port-forward fallback:
+       kubectl -n {{ .Release.Namespace }} port-forward --address 127.0.0.1 svc/{{ include "todo-chatbot.fullname" . }}-frontend 30080:3000
+       kubectl -n {{ .Release.Namespace }} port-forward --address 127.0.0.1 svc/{{ include "todo-chatbot.fullname" . }}-backend  30800:7860
+
+  2. Open the application:
+       Frontend  ->  http://localhost:30080
+       Backend   ->  http://localhost:30800/health
+
+  3. Check status:
+       kubectl -n {{ .Release.Namespace }} get pods
+
+  ##########################################################################
+  #  WARNING — CHANGING A DECLARED PORT REQUIRES A FRONTEND IMAGE REBUILD  #
+  #                                                                        #
+  #  The browser-facing URLs are NEXT_PUBLIC_* values inlined by           #
+  #  `next build`. They are compile-time constants: the ConfigMap cannot   #
+  #  correct them at runtime. Edit charts/todo-chatbot/values.yaml, then   #
+  #  re-run deploy/deploy.sh, which rebuilds with the new ports.           #
+  ##########################################################################

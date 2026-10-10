@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers';
 import { ChatResponse, ConversationHistoryResponse } from '@/types/api';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.BACKEND_URL || 'http://localhost:8000';
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
 const AUTH_URL = process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:3000';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';

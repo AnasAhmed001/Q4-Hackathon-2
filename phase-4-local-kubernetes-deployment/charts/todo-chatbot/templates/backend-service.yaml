@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "todo-chatbot.fullname" . }}-backend
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "todo-chatbot.componentLabels" (dict "ctx" $ "component" "backend") | nindent 4 }}
+spec:
+  type: NodePort
+  selector:
+    {{- include "todo-chatbot.componentLabels" (dict "ctx" $ "component" "backend") | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.backend.containerPort }}
+      targetPort: http
+      # Read from values, never cluster-assigned (FR-006). The same object
+      # carries a ClusterIP, so this Service also serves in-cluster DNS as
+      # todo-chatbot-backend (FR-004).
+      nodePort: {{ .Values.backend.nodePort }}

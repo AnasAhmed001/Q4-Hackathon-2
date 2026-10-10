@@ -1,0 +1,35 @@
+# Phase IV (T013) — SECURITY-CRITICAL. Must exist before the first frontend build.
+#
+# frontend/.env exists on disk and holds the Better Auth secret and the database
+# URL (it is gitignored, so git is clean — but `docker build` would copy it into
+# an image layer without this file). Spec Risk #3; verified by T064's image scan.
+
+# Credentials — the whole point of this file
+.env
+.env.*
+*.pem
+
+# Build inputs that must never be baked
+node_modules
+.next
+out
+build
+dist
+
+# Repo plumbing
+.git
+.gitignore
+.dockerignore
+Dockerfile
+
+# Local noise
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+coverage
+.vercel
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+README.md

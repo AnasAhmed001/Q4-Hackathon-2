@@ -1,0 +1,16 @@
+apiVersion: v2
+name: todo-chatbot
+description: |
+  Phase IV — Todo AI Chatbot (Next.js frontend + FastAPI backend) as one
+  installation on a local Minikube cluster. Re-hosts the Phase III application;
+  it does not rebuild it.
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - todo
+  - chatbot
+  - nextjs
+  - fastapi
+maintainers:
+  - name: Q4 Hackathon

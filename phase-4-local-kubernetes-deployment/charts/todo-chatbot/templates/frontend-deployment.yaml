@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "todo-chatbot.fullname" . }}-frontend
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "todo-chatbot.componentLabels" (dict "ctx" $ "component" "frontend") | nindent 4 }}
+spec:
+  replicas: {{ .Values.frontend.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "todo-chatbot.componentLabels" (dict "ctx" $ "component" "frontend") | nindent 6 }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        {{- include "todo-chatbot.componentLabels" (dict "ctx" $ "component" "frontend") | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "todo-chatbot.serviceAccountName" . }}
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: frontend
+          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.frontend.containerPort }}
+              protocol: TCP
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sleep", "10"]
+          envFrom:
+            # Supplies BETTER_AUTH_URL, ALLOWED_ORIGINS (K1 — this is what makes
+            # the deployed origin accepted instead of a 403/redirect loop on
+            # /api/auth/*), BETTER_AUTH_SECURE_COOKIES (K2) and NODE_ENV.
+            - configMapRef:
+                name: {{ include "todo-chatbot.configMapName" . }}
+          env:
+            # The frontend holds Better Auth's user/session tables DIRECTLY —
+            # auth-server.ts:6-11 builds its own pg.Pool from this URL. It is a
+            # frontend runtime key, not backend-only (T008, FR-020 direct-access
+            # clause). optional: false gives FR-010 fail-fast here too.
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.existingSecret }}
+                  key: DATABASE_URL
+                  optional: false
+            - name: BETTER_AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.existingSecret }}
+                  key: BETTER_AUTH_SECRET
+                  optional: false
+          # /login is public, unauthenticated, and renders a real page without
+          # touching the database — which is exactly the readiness signal we
+          # want. tcpSocket is the liveness probe because a process that accepts
+          # connections but cannot render would be wrongly killed by an HTTP
+          # liveness check.
+          startupProbe:
+            httpGet:
+              path: /login
+              port: http
+            periodSeconds: 2
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            tcpSocket:
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.frontend.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            # Without this, Next.js fails on its first cache write under
+            # readOnlyRootFilesystem (D7).
+            - name: next-cache
+              mountPath: /app/.next/cache
+      volumes:
+        - name: next-cache
+          emptyDir: {}
